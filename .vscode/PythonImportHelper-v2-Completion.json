@@ -1,0 +1,144 @@
+[
+    {
+        "label": "hashlib",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "hashlib",
+        "description": "hashlib",
+        "detail": "hashlib",
+        "documentation": {}
+    },
+    {
+        "label": "json",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "json",
+        "description": "json",
+        "detail": "json",
+        "documentation": {}
+    },
+    {
+        "label": "os",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "os",
+        "description": "os",
+        "detail": "os",
+        "documentation": {}
+    },
+    {
+        "label": "signal",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "signal",
+        "description": "signal",
+        "detail": "signal",
+        "documentation": {}
+    },
+    {
+        "label": "sys",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "sys",
+        "description": "sys",
+        "detail": "sys",
+        "documentation": {}
+    },
+    {
+        "label": "threading",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "threading",
+        "description": "threading",
+        "detail": "threading",
+        "documentation": {}
+    },
+    {
+        "label": "BaseHTTPRequestHandler",
+        "importPath": "http.server",
+        "description": "http.server",
+        "isExtraImport": true,
+        "detail": "http.server",
+        "documentation": {}
+    },
+    {
+        "label": "ThreadingHTTPServer",
+        "importPath": "http.server",
+        "description": "http.server",
+        "isExtraImport": true,
+        "detail": "http.server",
+        "documentation": {}
+    },
+    {
+        "label": "Handler",
+        "kind": 6,
+        "importPath": "backends.server",
+        "description": "backends.server",
+        "peekOfCode": "class Handler(BaseHTTPRequestHandler):\n    server_version = \"cn-backend/1.0\"\n    protocol_version = \"HTTP/1.1\"\n    def _send(self, code, body=b\"\", ctype=\"application/json\", extra=None):\n        self.send_response(code)\n        self.send_header(\"X-Backend\", BACKEND_ID)\n        if code != 304:\n            self.send_header(\"Content-Type\", ctype)\n        self.send_header(\"Content-Length\", str(len(body)) if code != 304 else \"0\")\n        for k, v in (extra or {}).items():",
+        "detail": "backends.server",
+        "documentation": {}
+    },
+    {
+        "label": "main",
+        "kind": 2,
+        "importPath": "backends.server",
+        "description": "backends.server",
+        "peekOfCode": "def main():\n    httpd = ThreadingHTTPServer((BIND, PORT), Handler)\n    httpd.daemon_threads = True\n    def shutdown(signum, _frame):\n        print(\"[backend %s] signal %s, shutting down\" % (BACKEND_ID, signum), flush=True)\n        threading.Thread(target=httpd.shutdown, daemon=True).start()\n    signal.signal(signal.SIGTERM, shutdown)\n    signal.signal(signal.SIGINT, shutdown)\n    print(\n        \"[backend %s] owner=%s listening on http://%s:%d (pid %d)\"",
+        "detail": "backends.server",
+        "documentation": {}
+    },
+    {
+        "label": "BACKEND_ID",
+        "kind": 5,
+        "importPath": "backends.server",
+        "description": "backends.server",
+        "peekOfCode": "BACKEND_ID = os.environ.get(\"BACKEND_ID\", \"A\").upper()\nBACKEND_OWNER = os.environ.get(\"BACKEND_OWNER\", \"unknown\")\nPORT = int(os.environ.get(\"PORT\", \"3001\"))\nBIND = os.environ.get(\"BIND\", \"0.0.0.0\")  # NOT 127.0.0.1: other Macs must reach us\nCACHEABLE_BODY = json.dumps(\n    {\"resource\": \"cacheable\", \"note\": \"identical on every backend\", \"version\": 1},\n    sort_keys=True,\n).encode()\nCACHEABLE_ETAG = '\"%s\"' % hashlib.sha256(CACHEABLE_BODY).hexdigest()[:16]\nclass Handler(BaseHTTPRequestHandler):",
+        "detail": "backends.server",
+        "documentation": {}
+    },
+    {
+        "label": "BACKEND_OWNER",
+        "kind": 5,
+        "importPath": "backends.server",
+        "description": "backends.server",
+        "peekOfCode": "BACKEND_OWNER = os.environ.get(\"BACKEND_OWNER\", \"unknown\")\nPORT = int(os.environ.get(\"PORT\", \"3001\"))\nBIND = os.environ.get(\"BIND\", \"0.0.0.0\")  # NOT 127.0.0.1: other Macs must reach us\nCACHEABLE_BODY = json.dumps(\n    {\"resource\": \"cacheable\", \"note\": \"identical on every backend\", \"version\": 1},\n    sort_keys=True,\n).encode()\nCACHEABLE_ETAG = '\"%s\"' % hashlib.sha256(CACHEABLE_BODY).hexdigest()[:16]\nclass Handler(BaseHTTPRequestHandler):\n    server_version = \"cn-backend/1.0\"",
+        "detail": "backends.server",
+        "documentation": {}
+    },
+    {
+        "label": "PORT",
+        "kind": 5,
+        "importPath": "backends.server",
+        "description": "backends.server",
+        "peekOfCode": "PORT = int(os.environ.get(\"PORT\", \"3001\"))\nBIND = os.environ.get(\"BIND\", \"0.0.0.0\")  # NOT 127.0.0.1: other Macs must reach us\nCACHEABLE_BODY = json.dumps(\n    {\"resource\": \"cacheable\", \"note\": \"identical on every backend\", \"version\": 1},\n    sort_keys=True,\n).encode()\nCACHEABLE_ETAG = '\"%s\"' % hashlib.sha256(CACHEABLE_BODY).hexdigest()[:16]\nclass Handler(BaseHTTPRequestHandler):\n    server_version = \"cn-backend/1.0\"\n    protocol_version = \"HTTP/1.1\"",
+        "detail": "backends.server",
+        "documentation": {}
+    },
+    {
+        "label": "BIND",
+        "kind": 5,
+        "importPath": "backends.server",
+        "description": "backends.server",
+        "peekOfCode": "BIND = os.environ.get(\"BIND\", \"0.0.0.0\")  # NOT 127.0.0.1: other Macs must reach us\nCACHEABLE_BODY = json.dumps(\n    {\"resource\": \"cacheable\", \"note\": \"identical on every backend\", \"version\": 1},\n    sort_keys=True,\n).encode()\nCACHEABLE_ETAG = '\"%s\"' % hashlib.sha256(CACHEABLE_BODY).hexdigest()[:16]\nclass Handler(BaseHTTPRequestHandler):\n    server_version = \"cn-backend/1.0\"\n    protocol_version = \"HTTP/1.1\"\n    def _send(self, code, body=b\"\", ctype=\"application/json\", extra=None):",
+        "detail": "backends.server",
+        "documentation": {}
+    },
+    {
+        "label": "CACHEABLE_BODY",
+        "kind": 5,
+        "importPath": "backends.server",
+        "description": "backends.server",
+        "peekOfCode": "CACHEABLE_BODY = json.dumps(\n    {\"resource\": \"cacheable\", \"note\": \"identical on every backend\", \"version\": 1},\n    sort_keys=True,\n).encode()\nCACHEABLE_ETAG = '\"%s\"' % hashlib.sha256(CACHEABLE_BODY).hexdigest()[:16]\nclass Handler(BaseHTTPRequestHandler):\n    server_version = \"cn-backend/1.0\"\n    protocol_version = \"HTTP/1.1\"\n    def _send(self, code, body=b\"\", ctype=\"application/json\", extra=None):\n        self.send_response(code)",
+        "detail": "backends.server",
+        "documentation": {}
+    },
+    {
+        "label": "CACHEABLE_ETAG",
+        "kind": 5,
+        "importPath": "backends.server",
+        "description": "backends.server",
+        "peekOfCode": "CACHEABLE_ETAG = '\"%s\"' % hashlib.sha256(CACHEABLE_BODY).hexdigest()[:16]\nclass Handler(BaseHTTPRequestHandler):\n    server_version = \"cn-backend/1.0\"\n    protocol_version = \"HTTP/1.1\"\n    def _send(self, code, body=b\"\", ctype=\"application/json\", extra=None):\n        self.send_response(code)\n        self.send_header(\"X-Backend\", BACKEND_ID)\n        if code != 304:\n            self.send_header(\"Content-Type\", ctype)\n        self.send_header(\"Content-Length\", str(len(body)) if code != 304 else \"0\")",
+        "detail": "backends.server",
+        "documentation": {}
+    }
+]
