@@ -1,0 +1,21 @@
+
+; <<>> DiG 9.10.6 <<>> @127.0.0.1 app.team1.test
+; (1 server found)
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 41689
+;; flags: qr aa rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+;; QUESTION SECTION:
+;app.team1.test.			IN	A
+
+;; ANSWER SECTION:
+app.team1.test.		300	IN	A	10.83.116.6
+
+;; Query time: 2 msec
+;; SERVER: 127.0.0.1#53(127.0.0.1)
+;; WHEN: Mon Oct 05 00:50:58 IST 2026
+;; MSG SIZE  rcvd: 59
+

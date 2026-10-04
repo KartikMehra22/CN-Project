@@ -4,10 +4,12 @@
 
 | Mac | Person | Role | IP (LAN) | Interface | MAC | Service / port |
 |---|---|---|---|---|---|---|
-| 1 | Aditya | DNS + client + controller | _fill_ | _en0_ | _fill_ | dnsmasq 53/udp,tcp |
-| 2 | Kartik | nginx edge | _fill_ | _en0_ | _fill_ | 8443/tcp (TLS) |
-| 3 | Prajjwal | Backend A | _fill_ | _en0_ | _fill_ | 3001/tcp |
-| 4 | Pratyush | Backend B | _fill_ | _en0_ | _fill_ | 3002/tcp |
+| 1 | Aditya Kumar (2401010029) | DNS + client + controller | `10.83.116.134` | `en0` | from `macos-network-info.sh` | dnsmasq 53/udp,tcp |
+| 2 | Kartik Mehra (2401020030) | nginx edge TLS + LB | `10.83.116.6` | `en0` | from `macos-network-info.sh` | 8443/tcp (TLS) |
+| 3 | Prajjwal Tripathi (2401010331) | Backend A | `10.83.116.111` | `en0` | from `macos-network-info.sh` | 3001/tcp |
+| 4 | Pratyush Parida (2401010351) | Backend B | `10.83.116.87` | `en0` | from `macos-network-info.sh` | 3002/tcp |
+
+**Team (form):** Fsociety — Type 1, four physical Macs. **DNS zone env:** `TEAM=team1`.
 
 Each Mac prints its row with `scripts/macos-network-info.sh`. Tunnel mode adds virtual IPs 10.250.0.3 (A) and 10.250.0.4 (B).
 

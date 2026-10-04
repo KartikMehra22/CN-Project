@@ -2,11 +2,13 @@
 
 Driven by `bin/failure-demo <scenario> <break|rollback|explain>`. Each is reversible; **always run rollback**, then `./bin/test-all`.
 
+**Team Fsociety — D3 for the Phase 1 video** is row **#3** below (Backend A stopped → passive failover to B). Full timed script: [FSOCIETY_PHASE1_VIDEO_SCRIPT.md](FSOCIETY_PHASE1_VIDEO_SCRIPT.md).
+
 | # | Scenario | Break | Expect | Why | Prove | Rollback |
 |---|---|---|---|---|---|---|
 | 1 | Wrong DNS server on a client | `bin/failure-demo wrong-resolver break` | `dig`/curl: cannot resolve; `ping <edge IP>` still works | DNS and IP connectivity are independent | `ping`, `dscacheutil -q host -a name app.team1.test`, `cat /etc/resolver/team1.test` | `... wrong-resolver rollback` |
 | 2 | Record points to wrong IP (Aditya) | `bin/failure-demo wrong-dns-record break` | `dig` succeeds with 192.0.2.99; curl cannot connect | DNS is a directory, not a connection | `dig +short`, `nc -vz 192.0.2.99 8443` | `... wrong-dns-record rollback` |
-| 3 | Backend A stopped | Prajjwal: `./macs/mac3-prajjwal/stop.sh` | requests succeed, all `B` (first may take 2 s) | passive failover (`max_fails`, `proxy_next_upstream`) | `./bin/test-all`, `./bin/doctor`, nginx access log | `./macs/mac3-prajjwal/start.sh` |
+| **3 = D3** | **Backend A stopped** | **Prajjwal (Mac 3):** `./macs/mac3-prajjwal/stop.sh` (or `./bin/failure-demo backend-a break` on Prajjwal’s Mac) | **HTTPS by name still works; all `/api/status` → Backend B** (first may take ~2 s) | passive failover (`max_fails`, `fail_timeout`, `proxy_next_upstream`) | `curl -sS https://app.team1.test:8443/api/status` (no `-k`); `./bin/doctor`; nginx access log | **`./macs/mac3-prajjwal/start.sh`** (or `./bin/failure-demo backend-a rollback`) |
 | 4 | Both stopped | both owners stop | DNS, TCP, TLS pass; `502 Bad Gateway` | edge alive, no upstream | `curl -i`, `./bin/doctor` | both start |
 | 5 | Wrong port | `bin/failure-demo wrong-port break` (runs `curl :9999`) | resolves, then connection refused | ports separate from IPs | `nc -vz edge 9999` vs `8443` | none |
 

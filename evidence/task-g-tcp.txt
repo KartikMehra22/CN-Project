@@ -1,0 +1,3 @@
+00:53:15.863748 IP 10.83.116.134.56392 > 10.83.116.6.8443: Flags [SEW], seq 2957474787, win 65535, options [mss 1460,nop,wscale 6,nop,nop,TS val 3337330935 ecr 0,sackOK,eol], length 0
+00:53:15.872964 IP 10.83.116.6.8443 > 10.83.116.134.56392: Flags [S.E], seq 4293678343, ack 2957474788, win 65535, options [mss 1460,nop,wscale 6,nop,nop,TS val 616406787 ecr 3337330935,sackOK,eol], length 0
+00:53:15.873128 IP 10.83.116.134.56392 > 10.83.116.6.8443: Flags [.], ack 1, win 2059, options [nop,nop,TS val 3337330944 ecr 616406787], length 0

@@ -1,0 +1,6 @@
+DNS lookup : 0.023958s
+TCP connect: 0.036145s
+TLS done   : 0.099158s
+First byte : 0.163397s
+Client 10.83.116.134:56364 -> Server 10.83.116.6:8443
+HTTP version: 2

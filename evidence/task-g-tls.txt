@@ -1,0 +1,13 @@
+* Connected to app.team1.test (10.83.116.6) port 8443
+* (304) (OUT), TLS handshake, Client hello (1):
+* (304) (IN), TLS handshake, Server hello (2):
+* TLSv1.2 (IN), TLS handshake, Certificate (11):
+* TLSv1.2 (IN), TLS handshake, Server key exchange (12):
+* TLSv1.2 (IN), TLS handshake, Server finished (14):
+* TLSv1.2 (OUT), TLS handshake, Client key exchange (16):
+* TLSv1.2 (OUT), TLS handshake, Finished (20):
+* TLSv1.2 (IN), TLS handshake, Finished (20):
+* SSL connection using TLSv1.2 / ECDHE-ECDSA-CHACHA20-POLY1305 / [blank] / UNDEF
+*  subject: CN=app.team1.test
+*  issuer: O=CN Phase1 Educational; CN=CN Phase1 Local CA (team1)
+*  SSL certificate verify ok.

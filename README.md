@@ -1,16 +1,21 @@
 # CN Private Network Service Platform - Phase 1
 
+**Team (Google Form):** **Fsociety** — Type 1 (4 physical macOS on the same LAN)  
+**Technical DNS zone:** `TEAM=team1` → `app.team1.test` / `api.team1.test` (domain config, not the form team name)
+
 **What this does.** A client types `https://app.team1.test:8443`. Our own DNS server (dnsmasq) turns that
 name into the edge Mac's IP, the client opens a TCP connection and a TLS session to nginx, and nginx
 forwards the HTTP request - alternating - to Backend A or Backend B. Every step can be observed with
 `dig`, `curl -v`, and Wireshark. *The application stays simple; the network is the project.*
 
-| Mac | Person | Roll No. | Role | Ports |
-|---|---|---|---|---|
-| 1 | **Aditya Kumar** | 2401010029 | Private DNS (dnsmasq) + controller + test client | 53/udp+tcp |
-| 2 | **Kartik Mehra** | 2401020030 | nginx edge: TLS termination, reverse proxy, round-robin LB | 8443/tcp |
-| 3 | **Prajjwal Tripathi** | 2401010331 | Backend A (Python stdlib REST) | 3001/tcp |
-| 4 | **Pratyush Parida** | 2401010351 | Backend B (same code, different config) | 3002/tcp |
+| Mac | Person | Roll No. | Role | Live LAN IP | Ports |
+|---|---|---|---|---|---|
+| 1 | **Aditya Kumar** | 2401010029 | Private DNS (dnsmasq) + controller + test client | `10.83.116.134` | 53/udp+tcp |
+| 2 | **Kartik Mehra** | 2401020030 | nginx edge: TLS termination, reverse proxy, round-robin LB | `10.83.116.6` | 8443/tcp |
+| 3 | **Prajjwal Tripathi** | 2401010331 | Backend A (Python stdlib REST) | `10.83.116.111` | 3001/tcp |
+| 4 | **Pratyush Parida** | 2401010351 | Backend B (same code, different config) | `10.83.116.87` | 3002/tcp |
+
+**Phase 1 demo video (speak-aloud):** [docs/FSOCIETY_PHASE1_VIDEO_SCRIPT.md](docs/FSOCIETY_PHASE1_VIDEO_SCRIPT.md)
 
 ## Two network modes (`NETWORK_MODE`)
 
@@ -95,4 +100,4 @@ Never commit tokens, credentials JSON, `.env`, or any private key (`.gitignore` 
 
 ## Docs
 
-[ARCHITECTURE](docs/ARCHITECTURE.md) - [REQUEST_FLOW](docs/REQUEST_FLOW.md) - [PHASE1](docs/PHASE1.md) (task-by-task checklist) - [LAN_MODE](docs/LAN_MODE.md) - [CLOUDFLARE_MODE](docs/CLOUDFLARE_MODE.md) - [FAILURE_DEMOS](docs/FAILURE_DEMOS.md) - [TROUBLESHOOTING](docs/TROUBLESHOOTING.md) - [VIVA](docs/VIVA.md)
+[ARCHITECTURE](docs/ARCHITECTURE.md) - [REQUEST_FLOW](docs/REQUEST_FLOW.md) - [PHASE1](docs/PHASE1.md) (task-by-task checklist) - [LAN_MODE](docs/LAN_MODE.md) - [CLOUDFLARE_MODE](docs/CLOUDFLARE_MODE.md) - [FAILURE_DEMOS](docs/FAILURE_DEMOS.md) - [FSOCIETY video script](docs/FSOCIETY_PHASE1_VIDEO_SCRIPT.md) - [PROJECT_SUBMISSION_REPORT](docs/PROJECT_SUBMISSION_REPORT.md) - [TROUBLESHOOTING](docs/TROUBLESHOOTING.md) - [VIVA](docs/VIVA.md)
