@@ -18,3 +18,5 @@ Terminates TLS, then proxies round-robin to Backend A/B with passive failover; r
 
 ## Explain in the viva
 TCP/TLS handshake, certificate/CA/SAN, TLS termination, reverse proxy vs forward proxy, upstream block, round robin, `max_fails`/`fail_timeout`/`proxy_next_upstream`, why clients never see backend IPs, 502 meaning, single point of failure.
+
+Phase 2: `./bin/phase2 setup` starts the **backup DNS** here and writes the standby's certificate bundle (`~/cn-edge-bundle.enc`). See [docs/PHASE2.md](../../docs/PHASE2.md).

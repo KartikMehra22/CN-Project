@@ -15,8 +15,9 @@ dns_render() {
   [ -n "${EDGE_IP:-}" ] || die "EDGE_IP (Vaibhav's IP) not set"
   if [ "$DNS_IP" = "127.0.0.1" ]; then DNS_LISTEN="127.0.0.1"; else DNS_LISTEN="127.0.0.1,${DNS_IP}"; fi
   export DNS_LISTEN DNSMASQ_PID
+  local DNS_RECORD_IP="${DNS_RECORD_IP:-$EDGE_IP}"   # Phase 2: standby IP after a cutover, or a demo override
   render_template "$REPO_ROOT/config/dns/dnsmasq.conf.template" "$DNSMASQ_CONF" \
-    DNS_PORT DNS_LISTEN TEST_ZONE APP_DOMAIN API_DOMAIN EDGE_IP DNS_TTL DNSMASQ_PID
+    DNS_PORT DNS_LISTEN TEST_ZONE APP_DOMAIN API_DOMAIN DNS_RECORD_IP DNS_TTL DNSMASQ_PID
 }
 
 dns_start() {
@@ -59,10 +60,13 @@ dns_running() {
 
 # Scoped resolver: only *.<team>.test goes to our server; the rest of the
 # system DNS configuration is left untouched (no System Settings edits needed).
-resolver_install() {  # resolver_install <nameserver-ip>
-  local ns="$1" f="$RESOLVER_FILE_DIR/$TEST_ZONE" tmp
+resolver_install() {  # resolver_install <nameserver-ip> [backup-nameserver-ip]
+  # Backup defaults to DNS2_IP (empty until `bin/phase2 setup`). Pass "" to force a single server.
+  local ns="$1" ns2="${2-${DNS2_IP:-}}" f="$RESOLVER_FILE_DIR/$TEST_ZONE" tmp
   tmp="$(mktemp)"
-  { echo "# managed by cn-phase1 (remove: bin/teardown)"; echo "nameserver $ns"; [ "$DNS_PORT" != 53 ] && echo "port $DNS_PORT"; } > "$tmp"
+  { echo "# managed by cn-phase1 (remove: bin/teardown)"; echo "nameserver $ns"
+    [ -n "$ns2" ] && [ "$ns2" != "$ns" ] && echo "nameserver $ns2"
+    [ "$DNS_PORT" != 53 ] && echo "port $DNS_PORT"; } > "$tmp"
   sudo_run mkdir -p "$RESOLVER_FILE_DIR"
   if [ -f "$f" ] && ! grep -q "managed by cn-phase1" "$f"; then
     sudo_run cp -p "$f" "$CN_BACKUP_DIR/resolver.$TEST_ZONE.orig"
@@ -102,10 +106,11 @@ edge_render() {
   ensure_dirs
   [ -n "${BACKEND_A_HOST:-}" ] && [ -n "${BACKEND_B_HOST:-}" ] || die "Backend addresses not set (HARDIK_LAN_IP/AKSHAT_LAN_IP, or NETWORK_MODE=tunnel)"
   mkdir -p "$NGINX_PREFIX/tmp"
-  export NGINX_PID NGINX_PREFIX TLS_CERT TLS_KEY LOG_DIR
+  EDGE_LABEL="${EDGE_LABEL:-$(hostname -s | tr -c 'A-Za-z0-9.-\n' '-')}"
+  export NGINX_PID NGINX_PREFIX TLS_CERT TLS_KEY LOG_DIR EDGE_LABEL
   render_template "$REPO_ROOT/config/nginx/nginx.conf.template" "$NGINX_CONF" \
     NETWORK_MODE NGINX_PID LOG_DIR NGINX_PREFIX BACKEND_A_HOST BACKEND_A_PORT BACKEND_B_HOST BACKEND_B_PORT \
-    UPSTREAM_MAX_FAILS UPSTREAM_FAIL_TIMEOUT UPSTREAM_CONNECT_TIMEOUT EDGE_PORT APP_DOMAIN API_DOMAIN TLS_CERT TLS_KEY
+    UPSTREAM_MAX_FAILS UPSTREAM_FAIL_TIMEOUT UPSTREAM_CONNECT_TIMEOUT EDGE_PORT APP_DOMAIN API_DOMAIN TLS_CERT TLS_KEY EDGE_LABEL
 }
 
 nginx_cmd() { "$(brew_bin nginx)" -e "$CN_LOG_DIR/nginx-error.log" -p "$NGINX_PREFIX/" -c "$NGINX_CONF" "$@"; }

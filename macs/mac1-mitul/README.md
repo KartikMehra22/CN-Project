@@ -18,3 +18,5 @@ First hop: the client asks Mitul's dnsmasq for `app.team1.test` and gets Vaibhav
 
 ## Explain in the viva
 Resolver vs record, UDP/53, TTL and caching, why `dig` differs from what curl uses, DNS != IP connectivity, DNS service failure vs application failure.
+
+Phase 2: `./bin/phase2 setup` (also run by setup.sh); demos `dns-failover`, `ttl`, `cutover` run here. See [docs/PHASE2.md](../../docs/PHASE2.md).

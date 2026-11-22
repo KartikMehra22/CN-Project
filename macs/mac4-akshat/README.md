@@ -15,3 +15,5 @@ Same as Mac 3 (port 3002).
 
 ## Explain in the viva
 Same as Mac 3, plus: how being a DNS client (2nd resolver client) differs from being a server.
+
+Phase 2: `./bin/phase2 setup` also starts the **standby nginx** here (needs the edge bundle) and arms the backend firewall. See [docs/PHASE2.md](../../docs/PHASE2.md).

@@ -3,7 +3,7 @@
 #   name resolution -> TCP -> TLS -> edge -> backends -> application.
 set -uo pipefail
 REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-. "$REPO/scripts/common.sh"; . "$REPO/scripts/checks.sh"; load_config; . "$REPO/scripts/roles.sh"
+. "$REPO/scripts/common.sh"; . "$REPO/scripts/checks.sh"; load_config; . "$REPO/scripts/roles.sh"; . "$REPO/scripts/phase2.sh"
 [ -n "${EDGE_IP:-}" ] || die "Run your Mac's setup first."
 detect_trust
 banner "CN NETWORK DOCTOR   (mode: $NETWORK_MODE)"
@@ -46,14 +46,25 @@ layer "NGINX / EDGE"    l5 "The edge answers HTTP itself (/__edge/health) withou
   "nginx is up at TCP level but its HTTP handling is failing (bad config, wrong vhost/server_name)." \
   "(on Vaibhav) ./bin/status ; tail $CN_LOG_DIR/nginx-error.log"
 layer "BACKEND A"       l6 "The edge proxies to Backend A over TCP; failure here isolates the backend, not DNS/TLS." \
-  "Backend A process or Hardik's Cloudflare connector / LAN reachability is unavailable." \
-  "(on Hardik) ./macs/mac3-hardik/status.sh ; (on Vaibhav) nc -vz $BACKEND_A_HOST $BACKEND_A_PORT"
+  "Backend A process or Hardik's Cloudflare connector / LAN reachability is unavailable, or its firewall (pf anchor cn-phase2) does not allow the edge." \
+  "(on Hardik) ./macs/mac3-hardik/status.sh ; sudo pfctl -a cn-phase2 -sr ; (on Vaibhav) nc -vz $BACKEND_A_HOST $BACKEND_A_PORT"
 layer "BACKEND B"       l7 "The edge proxies to Backend B over TCP; failure here isolates the backend, not DNS/TLS." \
-  "Backend B process or Akshat's Cloudflare connector / LAN reachability is unavailable." \
-  "(on Akshat) ./macs/mac4-akshat/status.sh ; (on Vaibhav) nc -vz $BACKEND_B_HOST $BACKEND_B_PORT"
+  "Backend B process or Akshat's Cloudflare connector / LAN reachability is unavailable, or its firewall (pf anchor cn-phase2) does not allow the edge." \
+  "(on Akshat) ./macs/mac4-akshat/status.sh ; sudo pfctl -a cn-phase2 -sr ; (on Vaibhav) nc -vz $BACKEND_B_HOST $BACKEND_B_PORT"
 layer "CLOUDFLARE (WARP)" l8 "In tunnel mode the edge reaches $TUNNEL_A_IP/$TUNNEL_B_IP through an overlay, not the LAN." \
   "Cloudflare WARP not connected on the edge, or split-tunnel excludes 10.250.0.0/24." \
   "warp-cli status ; docs/CLOUDFLARE_MODE.md"
+# Phase 2 redundancy layers: only checked once `bin/phase2 setup` has armed this Mac. Listed last so the
+# first failing layer is still the one on the live request path.
+if [ "${PHASE2:-0}" = 1 ]; then
+  l10() { chk_dns2; }; l11() { chk_edge_standby; }
+  layer "BACKUP DNS (Ext A)"  l10 "A second resolver means a DNS outage is survivable; losing it silently removes that safety net." \
+    "Backup dnsmasq on $DNS2_IP is not running or answers a different record than the primary." \
+    "dig -p $DNS_PORT @$DNS2_IP $APP_DOMAIN ; (on that Mac) ./bin/phase2 start"
+  layer "STANDBY EDGE (Ext E)" l11 "A standby nginx with the same certificate is what a DNS cutover moves traffic to." \
+    "Standby nginx on $STANDBY_EDGE_IP is down or lacks the edge certificate." \
+    "(on that Mac) ./bin/phase2 status ; ./bin/phase2 setup"
+fi
 layer "HTTP / APPLICATION" l9 "Application layer: a 2xx JSON answer proves every layer beneath it worked." \
   "The full path is not delivering a successful response (see the first failing layer above)." \
   "curl -v $APP_URL/api/status"

@@ -22,7 +22,7 @@ WRONG DNS SERVER ON A CLIENT (run on a client Mac, e.g. Mitul or Vaibhav)
  Rollback: bin/failure-demo wrong-resolver rollback
 T
   ;;
-  wrong-resolver:break) resolver_install 192.0.2.53; say "BROKEN: resolver now points at unreachable 192.0.2.53. Rollback: bin/failure-demo wrong-resolver rollback";;
+  wrong-resolver:break) resolver_install 192.0.2.53 ""; say "BROKEN: resolver now points at unreachable 192.0.2.53. Rollback: bin/failure-demo wrong-resolver rollback";;
   wrong-resolver:rollback) resolver_install "$(my_dns)"; say "Restored resolver -> $(my_dns)";;
 
   wrong-dns-record:explain) cat <<T
@@ -34,7 +34,7 @@ DNS RECORD POINTS TO A WRONG IP (run on Mitul)
  Rollback: bin/failure-demo wrong-dns-record rollback   (clients: wait TTL ${DNS_TTL}s or flush cache)
 T
   ;;
-  wrong-dns-record:break) [ "${ROLE:-}" = mitul ] || die "Run on Mitul (DNS server)"; EDGE_IP="$WRONG_IP" dns_start; flush_dns_cache; say "BROKEN: $APP_DOMAIN -> $WRONG_IP";;
+  wrong-dns-record:break) [ "${ROLE:-}" = mitul ] || die "Run on Mitul (DNS server)"; DNS_RECORD_IP="$WRONG_IP" dns_start; flush_dns_cache; say "BROKEN: $APP_DOMAIN -> $WRONG_IP";;
   wrong-dns-record:rollback) [ "${ROLE:-}" = mitul ] || die "Run on Mitul"; dns_start; flush_dns_cache; say "Record restored -> $EDGE_IP";;
 
   backend-a:explain|backend-b:explain|both-backends:explain) cat <<T

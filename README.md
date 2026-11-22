@@ -1,4 +1,4 @@
-# CN Private Network Service Platform - Phase 1
+# CN Private Network Service Platform - Phase 1 + Phase 2
 
 **What this does.** A client types `https://app.team1.test:8443`. Our own DNS server (dnsmasq) turns that
 name into the edge Mac's IP, the client opens a TCP connection and a TLS session to nginx, and nginx
@@ -58,6 +58,12 @@ Setup scripts ask once for non-secret values (team name, mode, LAN IPs) and reme
 `~/.config/cn-phase1/project.env` (chmod 600). They are **idempotent** - run them again any time.
 Tunnel mode additionally needs the one-time admin step: [docs/CLOUDFLARE_MODE.md](docs/CLOUDFLARE_MODE.md).
 
+## Phase 2 (Harden, Recover, Troubleshoot) - same idea, one command per Mac
+
+`./bin/phase2 setup` on every Mac (it works out that Mac's duty from its IP; the Phase 1 setup scripts call it too). Then:
+`bin/phase2 test` (checks A-E) and one command per demo: `dns-failover` (A), `ttl` (B), `isolate on|off|test` (C), `failover` (D), `cutover` (E), `bin/doctor` + `drill` (F).
+Order, reasoning and limits: [docs/PHASE2.md](docs/PHASE2.md). Transcripts of every demo land in `evidence/phase2/`.
+
 ## Daily commands (any Mac, after setup)
 
 ```bash
@@ -67,6 +73,7 @@ Tunnel mode additionally needs the one-time admin step: [docs/CLOUDFLARE_MODE.md
 ./bin/collect-evidence           # timestamped evidence/<time>/ (no secrets)
 ./bin/failure-demo <scenario> <break|rollback|explain>
 ./bin/teardown                   # stop services, remove scoped resolver
+./bin/phase2 help                # Phase 2: setup | status | test | demos | rollback
 scripts/capture-packets.sh 60    # bounded tcpdump for Wireshark (Task G)
 ```
 
@@ -75,7 +82,7 @@ scripts/capture-packets.sh 60    # bounded tcpdump for Wireshark (Task G)
 ```
 backends/server.py      one stdlib-only REST backend (A or B by env)
 config/                 project.example.env (all constants), dnsmasq + nginx templates
-scripts/                common.sh, roles.sh, role.sh, checks.sh, CA/DNS/capture helpers
+scripts/                common.sh, roles.sh, role.sh, checks.sh, phase2.sh, CA/DNS/capture helpers
 macs/mac{1..4}-*/       setup|start|stop|status.sh + README per machine
 bin/                    operator commands       tests/   per-layer tests
 admin/                  one-time Cloudflare bootstrap (Mitul only)
@@ -95,4 +102,4 @@ Never commit tokens, credentials JSON, `.env`, or any private key (`.gitignore` 
 
 ## Docs
 
-[ARCHITECTURE](docs/ARCHITECTURE.md) - [REQUEST_FLOW](docs/REQUEST_FLOW.md) - [PHASE1](docs/PHASE1.md) (task-by-task checklist) - [LAN_MODE](docs/LAN_MODE.md) - [CLOUDFLARE_MODE](docs/CLOUDFLARE_MODE.md) - [FAILURE_DEMOS](docs/FAILURE_DEMOS.md) - [TROUBLESHOOTING](docs/TROUBLESHOOTING.md) - [VIVA](docs/VIVA.md)
+[ARCHITECTURE](docs/ARCHITECTURE.md) - [REQUEST_FLOW](docs/REQUEST_FLOW.md) - [PHASE1](docs/PHASE1.md) (task-by-task checklist) - [PHASE2](docs/PHASE2.md) (extensions A-F) - [LAN_MODE](docs/LAN_MODE.md) - [CLOUDFLARE_MODE](docs/CLOUDFLARE_MODE.md) - [FAILURE_DEMOS](docs/FAILURE_DEMOS.md) - [TROUBLESHOOTING](docs/TROUBLESHOOTING.md) - [VIVA](docs/VIVA.md)

@@ -75,3 +75,17 @@ flowchart TD
   Q4 -- "502" --> BE["Edge OK, all backends down"]
   Q4 -- "200" --> OK["Healthy"]
 ```
+
+## 7. Phase 2 topology (LAN mode)
+```mermaid
+flowchart LR
+  C["Client Macs<br/>resolver lists BOTH DNS servers"] -->|"1st"| D1["Mac 1 Mitul<br/>PRIMARY dnsmasq :53"]
+  C -->|"2nd (if 1st silent)"| D2["Mac 2 Vaibhav<br/>BACKUP dnsmasq :53 (Ext A)"]
+  C -->|"HTTPS :8443 (record -> edge, TTL-bound)"| E1["Mac 2 Vaibhav<br/>PRIMARY nginx"]
+  C -.->|"after cutover (Ext E)"| E2["Mac 4 Akshat<br/>STANDBY nginx, same cert"]
+  E1 --> FA["pf allow-list (Ext C)"]
+  E2 --> FA
+  FA --> BA["Mac 3 Backend A :3001"]
+  FA --> BB["Mac 4 Backend B :3002"]
+  X["any other Mac"] -. "dropped by pf" .-> FA
+```

@@ -89,6 +89,16 @@ load_config() {
   fi
   APP_URL="https://${APP_DOMAIN}:${EDGE_PORT}"
   CURL="${CURL:-/usr/bin/curl}"; [ -x "$CURL" ] || CURL="$(command -v curl || true)"
+  # Phase 2 (only after `bin/phase2 setup` set PHASE2=1; LAN mode only). Derived, never persisted,
+  # so they follow EDGE_IP / AKSHAT_LAN_IP if DHCP renumbers. Override by setting them in project.env.
+  DNS_RECORD_IP=""    # empty = "the edge" (EDGE_IP, resolved when dnsmasq.conf is rendered); set only after a cutover
+  if [ "${PHASE2:-0}" = "1" ] && [ "$NETWORK_MODE" = "lan" ]; then
+    DNS2_IP="${DNS2_IP:-$EDGE_IP}"                      # backup DNS: the edge Mac (brief: any Mac except Mac 1)
+    STANDBY_EDGE_IP="${STANDBY_EDGE_IP:-$AKSHAT_LAN_IP}" # standby nginx: Mac 4 (brief: Mac 3 or 4)
+    [ "${ACTIVE_EDGE:-primary}" = "standby" ] && [ -n "$STANDBY_EDGE_IP" ] && DNS_RECORD_IP="$STANDBY_EDGE_IP"
+  else
+    DNS2_IP=""; STANDBY_EDGE_IP=""
+  fi
   export EDGE_IP APP_DOMAIN API_DOMAIN TEST_ZONE BACKEND_A_HOST BACKEND_B_HOST APP_URL
 }
 

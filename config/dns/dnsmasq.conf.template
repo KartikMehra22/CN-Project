@@ -13,8 +13,9 @@ bogus-priv
 local=/@@TEST_ZONE@@/
 
 # The two project records: both names point at the EDGE (Mac 2), never at a backend.
-address=/@@APP_DOMAIN@@/@@EDGE_IP@@
-address=/@@API_DOMAIN@@/@@EDGE_IP@@
+# (Phase 2: DNS_RECORD_IP is the edge IP, or the standby edge after a cutover.)
+address=/@@APP_DOMAIN@@/@@DNS_RECORD_IP@@
+address=/@@API_DOMAIN@@/@@DNS_RECORD_IP@@
 
 # TTL handed to clients for the records above (Extension B).
 local-ttl=@@DNS_TTL@@

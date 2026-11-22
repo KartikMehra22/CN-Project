@@ -40,4 +40,4 @@ Each Mac prints its row with `scripts/macos-network-info.sh`. Tunnel mode adds v
 * **Failover** - `max_fails=1 fail_timeout=5s`, `proxy_next_upstream error timeout http_502/503/504`, connect timeout 2s. If both fail, nginx returns a clear `502`.
 
 ## Single points of failure
-The edge (Mac 2) and DNS (Mac 1) are single points of failure in Phase 1. Phase 2 addresses these (backup resolver, standby edge with DNS cutover).
+The edge (Mac 2) and DNS (Mac 1) are single points of failure in Phase 1. Phase 2 ([PHASE2.md](PHASE2.md)) removes DNS as one (backup resolver) and shrinks the edge to a manual, TTL-bounded recovery (standby nginx + DNS cutover). The edge stays the one remaining SPOF; removing it needs a floating IP or health-checked DNS.

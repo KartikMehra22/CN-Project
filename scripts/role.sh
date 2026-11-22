@@ -209,3 +209,14 @@ case "$role" in
     "$fn" "$@";;
   *) die "unknown role '$role'";;
 esac
+
+# ------------------------------------------------- Phase 2 (LAN mode only)
+# The same per-Mac command also arms Phase 2. Best effort: it can never break Phase 1.
+# Opt out with CN_SKIP_PHASE2=1; run it on its own any time with ./bin/phase2 setup.
+if [ "${CN_SKIP_PHASE2:-0}" != 1 ] && [ "${NETWORK_MODE:-lan}" = lan ]; then
+  case "$action" in
+    setup) echo; info "Phase 2 (resilience extensions): preparing this Mac"
+           CN_P2_CHAIN=1 "$REPO_ROOT/bin/phase2" setup || warn "Phase 2 prep did not finish; Phase 1 is unaffected. Re-run: ./bin/phase2 setup";;
+    start) [ "${PHASE2:-0}" = 1 ] && { "$REPO_ROOT/bin/phase2" start || true; };;
+  esac
+fi

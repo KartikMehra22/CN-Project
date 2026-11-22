@@ -35,3 +35,13 @@ Each block: **What / Why / Where / Protocol+port / Packet flow / If it fails / P
 * **Cloudflare tunnel**: `cloudflared` opens *outbound* connections to Cloudflare; WARP on the edge sends traffic for `10.250.0.x` into Cloudflare, which delivers it through the tunnel to the backend Mac. It is an **overlay**: virtual IPs on top of the internet.
 * **LAN vs overlay tunnel**: LAN = one broadcast domain, direct frames/ARP, no third party; overlay = encapsulated over other networks, extra latency, extra trust in the provider, virtual addressing. Hence tunnel mode changes the topology and is only for remote demo.
 * **Why can the client not see backend IPs**: nginx terminates the client connection and makes its own upstream connection; only nginx knows the upstream list.
+
+## Phase 2 Q&A
+* **DNS failure vs application failure**: DNS failure = names stop resolving (a backup resolver hides it); application failure = the name resolves and the TCP/TLS path works, then the service answers 502 or refuses. `dig` works in both; `curl` tells them apart.
+* **Why does the client keep the old IP after a record change?** The resolver cache may keep an answer for its TTL. `dig` always asks the server, so it shows the new value at once; the OS resolver (what browsers/curl use) does not until the TTL ends or the cache is flushed.
+* **How do you migrate traffic safely with DNS?** Lower the TTL, wait one old TTL, change the record, watch both servers, then raise the TTL. The TTL bounds how long users reach the old server.
+* **Why pf rules by source IP, and why the standby in the allow-list?** The backend cannot trust a client's claims, only its source address; the edge is the only legitimate caller. After a cutover the standby is the caller, so it must be allowed too.
+* **Passive vs active health checks**: passive (nginx OSS) learns from real failed requests and retries on the other upstream in the same request; active probes in the background (nginx Plus, HAProxy). Passive is enough here, at the cost of one retried request.
+* **Remaining single point of failure and the fix**: the edge nginx. Fix: two edges sharing a floating IP (VRRP/keepalived), or health-checked DNS failover; Extension E is the manual, TTL-bounded version.
+* **Why can the standby use the same certificate?** A certificate binds a public key to *names*; the standby serves the same names. The CA key stays on the edge; only the server certificate and key move, encrypted.
+* **How do you diagnose a fault you did not cause?** Layer by layer: name resolution -> TCP -> TLS -> application; first failing layer wins; `bin/doctor` automates it.

@@ -11,4 +11,4 @@ Driven by `bin/failure-demo <scenario> <break|rollback|explain>`. Each is revers
 | 5 | Wrong port | `bin/failure-demo wrong-port break` (runs `curl :9999`) | resolves, then connection refused | ports separate from IPs | `nc -vz edge 9999` vs `8443` | none |
 
 `bin/failure-demo <scenario> explain` prints the same details with your real names/IPs. Scenarios `backend-a`, `backend-b`, `both-backends` act on the local Mac if it owns that backend, else tell you whom to ask.
-For Extension B, set `DNS_TTL=30` in `~/.config/cn-phase1/project.env` and re-run `bin/start` on Mitul.
+For Extension B (TTL) and the other Phase 2 demos see [PHASE2.md](PHASE2.md): `bin/phase2 ttl` sets the short TTL itself and restores it.

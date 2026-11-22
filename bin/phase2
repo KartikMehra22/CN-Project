@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+# Phase 2 (Harden, Recover, Troubleshoot). Same command on every Mac; it works out the Mac's duties from its IP.
+set -uo pipefail
+REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+. "$REPO/scripts/common.sh"; load_config; . "$REPO/scripts/checks.sh"; . "$REPO/scripts/roles.sh"; . "$REPO/scripts/phase2.sh"
+
+usage() { cat <<U
+Phase 2 - one command per Mac, then one command per extension (docs/PHASE2.md)
+
+  SETUP (every Mac, same command)
+    bin/phase2 setup [KEY=VALUE ...]   arm whatever THIS Mac is responsible for (idempotent)
+    bin/phase2 topology                print the copy-paste setup line for your teammates' Macs
+    bin/phase2 status | test           where things stand | PASS/FAIL checks for A-E (non-destructive)
+    bin/phase2 start | stop            (re)start / stop this Mac's Phase 2 services after a reboot
+    bin/phase2 rollback                undo everything Phase 2 changed on this Mac
+
+  DEMOS (each saves a transcript to evidence/phase2/ and restores the system when it ends)
+    A  bin/phase2 dns-failover         on Mitul: stop primary DNS, clients keep resolving via the backup
+    B  bin/phase2 ttl                  on Mitul: short TTL, record change, stale cache, flush
+    C  bin/phase2 isolate on|off|test  on each backend Mac: on/off | anywhere: who can reach 3001/3002
+    D  bin/phase2 failover [a|b]       anywhere: stop a backend, prove service continues, restart it
+    E  bin/phase2 cutover [--stay]     on Mitul: DNS cutover to the standby edge, watch TTL effects
+       bin/phase2 point primary|standby  re-point the records on THIS DNS Mac (run on both DNS Macs)
+       bin/phase2 watch                run on a client: shows resolved IP + which edge answers
+    F  bin/phase2 drill [reveal|fix]   rehearse the faculty fault: random hidden fault, diagnose with bin/doctor
+U
+}
+
+cmd="${1:-help}"; [ $# -gt 0 ] && shift
+case "$cmd" in
+  setup)        p2_setup "$@";;
+  topology)     p2_topology_line;;
+  status)       p2_status;;
+  test)         exec "$REPO/tests/test_phase2.sh";;
+  start)        p2_start;;
+  stop)         p2_stop;;
+  rollback)     p2_rollback;;
+  edge-bundle)  case "${1:-export}" in export) p2_bundle_export "${2:-}";; import) p2_bundle_import "${2:?file}";; *) usage; exit 2;; esac;;
+  dns-failover) sudo -v; p2_record dns-failover p2_demo_dns_failover;;
+  ttl)          sudo -v; p2_record ttl p2_demo_ttl;;
+  isolate)      case "${1:-test}" in
+                  on)   p2_iso_on;;
+                  off)  p2_iso_off;;
+                  test) p2_record isolation-test p2_iso_test;;
+                  *)    usage; exit 2;;
+                esac;;
+  failover)     p2_record failover p2_demo_failover "${1:-a}";;
+  cutover)      sudo -v; p2_record cutover p2_demo_cutover "${1:-}";;
+  point)        p2_point "${1:-}";;
+  watch)        p2_watch;;
+  drill)        p2_drill "${1:-start}";;
+  help|-h|--help) usage;;
+  *)            usage; exit 2;;
+esac

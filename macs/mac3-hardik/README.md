@@ -18,3 +18,5 @@ Final hop. Receives plain HTTP from nginx, answers with JSON and `X-Backend: A`.
 
 ## Explain in the viva
 Bind 127.0.0.1 vs 0.0.0.0, ports, X-Backend, Cache-Control/ETag/304, what happens when this Mac stops (failover), tunnel = outbound-only overlay.
+
+Phase 2: `./bin/phase2 setup` arms the backend firewall; `./bin/phase2 isolate on|off` for the Extension C demo. See [docs/PHASE2.md](../../docs/PHASE2.md).
