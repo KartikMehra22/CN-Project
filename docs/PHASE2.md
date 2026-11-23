@@ -9,16 +9,16 @@ Every Mac runs the **same** command. It reads the IP table and works out *by its
 
 | Order | Who | Command | What it does |
 |---|---|---|---|
-| 1 | Vaibhav (edge, Mac 2) | `git pull && ./bin/phase2 setup` | starts the **backup DNS**; writes `~/cn-edge-bundle.enc` and prints its passphrase |
+| 1 | Hardik (edge, Mac 2) | `git pull && ./bin/phase2 setup` | starts the **backup DNS**; writes `~/cn-edge-bundle.enc` and prints its passphrase |
 | 2 | Akshat (Mac 4) | AirDrop the bundle, then `./bin/phase2 setup` | starts the **standby nginx** (bundle is found in `~/Downloads`, asks the passphrase); arms the backend firewall |
 | 3 | Mitul (Mac 1) | `./bin/phase2 setup` | resolver now lists primary + backup; prints a copy-paste line for the others |
-| 4 | Hardik (Mac 3) | paste the line Mitul's Mac printed | arms the backend firewall |
+| 4 | Vaibhav (Mac 3) | paste the line Mitul's Mac printed | arms the backend firewall |
 | 5 | anyone | `./bin/phase2 test` | PASS/FAIL for A-E, non-destructive |
 
 The Phase 1 commands (`./macs/<mac>/setup.sh`) now call this at the end too, so people who already know that command do not need to remember a second one.
 After a reboot: `./bin/start` (it restarts the Phase 2 services as well). Undo everything: `./bin/phase2 rollback`.
 
-**With fewer Macs** (e.g. Mitul = DNS + Backend B, Hardik = edge + Backend A): the defaults still hold - backup DNS goes to the edge Mac (Hardik), the standby edge to the Backend-B Mac (Mitul). Override with `DNS2_IP=` / `STANDBY_EDGE_IP=` in `~/.config/cn-phase1/project.env`.
+**With fewer Macs** (e.g. Mitul = DNS + Backend B, Vaibhav = edge + Backend A): the defaults still hold - backup DNS goes to the edge Mac (Vaibhav), the standby edge to the Backend-B Mac (Mitul). Override with `DNS2_IP=` / `STANDBY_EDGE_IP=` in `~/.config/cn-phase1/project.env`.
 
 ## What to run for each extension
 

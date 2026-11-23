@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CN Project Visual Guide</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%23f2a33a'/%3E%3C/svg%3E">
+<style>
+:root{
+  --bg:#f6f8fa; --card:#ffffff; --ink:#12263a; --muted:#52657a; --line:#d8e0e8;
+  --teal:#1c7293; --teal-solid:#1c7293; --teal-ink:#0f5a78; --box-ink:#12263a; --bar-old-bg:#f3c8c8; --bar-old-ink:#7a1f1f; --bar-new-bg:#bfe8d3; --bar-new-ink:#0f5a3a; --amber:#f2a33a; --amber-ink:#8a5200; --green:#1f8a5b; --red:#c93d3d;
+  --code-bg:#0f1b2a; --code-ink:#d7e3ee; --soft:#eaf1f6;
+  --hero-bg:#12263a; --hero-ink:#ffffff;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){--bg:#0c1622; --card:#13253a; --ink:#e8eef5; --muted:#9fb2c4; --line:#27405a; --teal:#5bb8d9; --amber:#f2a33a; --teal-ink:#8ad1ea; --amber-ink:#f2b866; --green:#4ccf93; --red:#ff8585; --code-bg:#08111b; --soft:#193048; --hero-bg:#0a121c; --box-ink:#26425f; --bar-old-bg:#5a2626; --bar-old-ink:#ffd0d0; --bar-new-bg:#17513a; --bar-new-ink:#c9f3df; color-scheme:dark;}
+}
+:root[data-theme="dark"]{--bg:#0c1622; --card:#13253a; --ink:#e8eef5; --muted:#9fb2c4; --line:#27405a; --teal:#5bb8d9; --amber:#f2a33a; --teal-ink:#8ad1ea; --amber-ink:#f2b866; --green:#4ccf93; --red:#ff8585; --code-bg:#08111b; --soft:#193048; --hero-bg:#0a121c; --box-ink:#26425f; --bar-old-bg:#5a2626; --bar-old-ink:#ffd0d0; --bar-new-bg:#17513a; --bar-new-ink:#c9f3df; color-scheme:dark;}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:64px}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+h1,h2,h3{font-family:"Iowan Old Style",Georgia,"Times New Roman",serif;line-height:1.15;margin:0}
+a{color:var(--teal-ink)}
+.wrap{max-width:1080px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:20;background:var(--card)}
+/* nav */
+nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:var(--card);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;gap:4px;align-items:center;overflow-x:auto;padding-top:8px;padding-bottom:8px}
+nav b{font-family:Georgia,serif;margin-right:12px;white-space:nowrap}
+nav a{white-space:nowrap;text-decoration:none;color:var(--muted);padding:6px 12px;border-radius:999px;font-size:14px;font-weight:600}
+nav a:hover,nav a:focus-visible{background:var(--soft);color:var(--ink)}
+/* hero */
+.hero{background:var(--hero-bg);color:var(--hero-ink);padding:56px 0 48px}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--amber)}
+.hero h1{font-size:clamp(32px,6vw,54px);margin:10px 0 14px;max-width:16ch}
+.hero p{max-width:56ch;color:#cadcfc;font-size:18px;margin:0 0 24px}
+.stats{display:flex;flex-wrap:wrap;gap:10px}
+.stats span{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);padding:8px 14px;border-radius:999px;font-size:14px}
+.stats b{color:var(--amber)}
+/* sections */
+section{padding:44px 0 8px}
+.sec-h{display:flex;align-items:baseline;flex-wrap:wrap;gap:6px 14px;margin-bottom:6px}
+.sec-h h2{font-size:30px}
+.sec-h .kicker{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--teal-ink)}
+.lead{color:var(--muted);margin:0 0 20px;max-width:70ch}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px}
+/* map */
+.mapwrap{overflow-x:auto}
+.map{min-width:720px;width:100%;height:auto;display:block}
+.map text{font-family:system-ui,sans-serif}
+.map .bt,.map .bt2{font-size:17px;font-weight:700;text-anchor:middle}
+.map .bs,.map .bs2{font-size:13px;text-anchor:middle}
+.map .b-ink rect{fill:var(--box-ink)}.map .b-teal rect{fill:var(--teal-solid)}
+.map .b-ink text,.map .b-teal text{fill:#fff}
+.map .b-p2 rect{fill:none;stroke:var(--amber);stroke-width:2;stroke-dasharray:6 5}
+.map .bt2{fill:var(--amber-ink)}.map .bs2{fill:var(--muted)}
+.map .ln{fill:none;stroke:var(--muted);stroke-width:2}.map .ln.dash{stroke:var(--amber);stroke-dasharray:6 5}
+.map .fill-line{fill:var(--muted)}
+.map .num{fill:var(--amber)}.map .nt{font-size:14px;font-weight:800;text-anchor:middle;fill:#12263a}
+.map .fw{fill:none;stroke:var(--red);stroke-width:2;stroke-dasharray:8 6}
+.map .t-p2{font-size:13px;font-weight:700;fill:var(--red)}
+.map .t-p2s{font-size:13px;fill:var(--amber-ink);font-weight:600}
+.map .leg{font-size:14px;fill:var(--ink)}
+.key{display:flex;flex-wrap:wrap;gap:16px;margin-top:10px;font-size:14px;color:var(--muted)}
+.key i{display:inline-block;width:22px;height:0;border-top:3px solid var(--teal);vertical-align:middle;margin-right:6px}
+.key i.d{border-top:3px dashed var(--amber)}
+/* cards */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:10px}
+.card header{display:flex;align-items:center;gap:10px}
+.card h3{font-size:20px;flex:1}
+.card p{margin:0;font-size:15px}
+.badge{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:var(--teal-solid);color:#fff;font-weight:800;flex:none}
+.badge.amber{background:var(--amber);color:#12263a}
+.status{font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px;border:1px solid currentColor;white-space:nowrap}
+.status.ok{color:var(--green)}.status.todo{color:var(--amber-ink)}.status.info{color:var(--muted)}
+.ask{color:var(--muted)}.why{color:var(--ink)}
+.vis{background:var(--soft);border-radius:12px;padding:12px;font-size:14px}
+.vis .res{margin:8px 0 0;font-size:14px}
+.vis small{display:block;color:var(--muted);font-size:12px;margin:6px 0 4px}
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.node{border-radius:10px;padding:8px 10px;border:2px solid;display:flex;flex-direction:column;gap:2px}
+.node small{margin:0}.node b{font-size:16px}.node i{font-size:12px;color:var(--muted)}
+.node.dead{border-color:var(--red);border-style:dashed}.node.dead b{color:var(--red)}
+.node.live{border-color:var(--green)}.node.live b{color:var(--green)}
+.bar{display:flex;border-radius:8px;overflow:hidden;font-size:12px;font-weight:700;text-align:center}
+.bar span{padding:8px 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar .new{flex:0 0 auto!important}
+.on{display:block;color:var(--muted);font-size:12px;margin:3px 2px 0}
+.cmdw{min-width:0}
+.bar .old{background:var(--bar-old-bg);color:var(--bar-old-ink)}.bar .new{background:var(--bar-new-bg);color:var(--bar-new-ink)}
+.chips{display:flex;gap:5px;flex-wrap:wrap}
+.chip{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;font-weight:800;font-size:14px}
+.chip.a{background:var(--teal-solid);color:#fff}.chip.b{background:var(--amber);color:#12263a}
+.rules{margin:0;background:var(--code-bg);color:var(--code-ink);border-radius:10px;padding:10px;font:12px/1.5 ui-monospace,Menlo,Consolas,monospace;white-space:pre-wrap;word-break:break-word}
+.rules .g{color:#5fd39a}.rules .r{color:#ff8a8a}
+.ladder{display:flex;gap:6px;flex-wrap:wrap}
+.ladder span{background:var(--teal-solid);color:#fff;font-weight:700;font-size:13px;padding:6px 12px;border-radius:999px}
+.ladder span+span::before{content:"→ ";opacity:.7}
+/* commands + refs */
+.cmd{display:flex;align-items:stretch;background:var(--code-bg);border-radius:10px;overflow:hidden}
+.cmd code{flex:1;padding:9px 12px;color:var(--code-ink);font:13px/1.5 ui-monospace,Menlo,Consolas,monospace;white-space:pre-wrap;word-break:break-word}
+.copy{border:0;background:#1d3652;color:#cfe3f5;font-weight:700;font-size:12px;padding:0 12px;cursor:pointer;min-width:58px}
+.copy:hover,.copy:focus-visible{background:var(--teal-solid);color:#fff;outline:none}
+.copy.done{background:var(--green);color:#fff}
+.where{display:flex;gap:8px;align-items:flex-start;margin-top:auto}
+.where>span{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding-top:5px}
+.refs{display:flex;flex-wrap:wrap;gap:6px}
+.ref{display:inline-flex;font:12px/1.4 ui-monospace,Menlo,Consolas,monospace;text-decoration:none;border:1px solid var(--line);border-radius:8px;padding:2px 8px;color:var(--ink);background:var(--card);word-break:break-all}
+.ref b{color:var(--amber-ink)}.ref:hover{border-color:var(--teal);background:var(--soft)}
+.ref.ev{border-color:var(--green);margin-left:0;margin-top:6px}
+.where{flex-wrap:wrap}
+/* per-mac strip */
+.macs{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:16px}
+.mac{padding:12px 14px;background:var(--card);border:1px solid var(--line);border-radius:12px}
+.mac b{display:block}.mac span{font-size:13px;color:var(--muted)}
+/* daily */
+.daily{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:10px;margin-top:16px}
+.daily>div{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:6px}
+.daily span{font-size:14px;color:var(--muted)}
+/* ladder section */
+details{background:var(--card);border:1px solid var(--line);border-radius:14px;margin-bottom:10px;padding:0}
+summary{cursor:pointer;list-style:none;display:flex;gap:12px;align-items:center;padding:14px 16px;font-weight:700}
+summary::-webkit-details-marker{display:none}
+summary .n{width:30px;height:30px;border-radius:50%;background:var(--teal-solid);color:#fff;display:grid;place-items:center;flex:none}
+summary em{font-style:normal;font-weight:500;color:var(--muted);margin-left:auto;font-size:14px}
+summary:focus-visible{outline:2px solid var(--teal);border-radius:14px}
+details[open] summary{border-bottom:1px solid var(--line)}
+.dbody{padding:14px 16px;display:grid;gap:10px}
+.dbody p{margin:0}.fail{color:var(--red);font-weight:600}
+/* table */
+.search{width:100%;max-width:420px;padding:10px 14px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit;margin-bottom:12px}
+.tbl{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;font-size:14px}
+.tbl th,.tbl td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+.tbl th{background:var(--soft);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.tbl code{font:13px ui-monospace,Menlo,Consolas,monospace}
+.tbl tr:last-child td{border-bottom:0}
+.tblwrap{overflow-x:auto}
+/* status strip */
+.note{border-left:4px solid var(--amber);background:var(--card);border-radius:0 12px 12px 0;padding:12px 16px;margin:16px 0 0;font-size:15px}
+footer{padding:36px 0 60px;color:var(--muted);font-size:14px}
+:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+@media (max-width:560px){.hero{padding:40px 0 34px}.sec-h h2{font-size:26px}.tbl .hide-s{display:none}}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<nav aria-label="Sections"><div class="wrap">
+  <b>Team AEIN</b>
+  <a href="#map">Map</a><a href="#phase1">Phase 1</a><a href="#phase2">Phase 2</a><a href="#find">Find the fault</a><a href="#commands">All commands</a>
+</div></nav>
+
+<header class="hero"><div class="wrap">
+  <div class="eyebrow">Computer Networks · Team AEIN</div>
+  <h1>Built it. Then broke it on purpose.</h1>
+  <p>Phase 1 built a small HTTPS site behind our own DNS, an nginx load balancer and two backends. Phase 2 made it survive failures.</p>
+  <div class="stats"><span><b>7</b> Phase 1 tasks (A–G)</span><span><b>6</b> Phase 2 extensions (A–F)</span><span><b>1</b> setup command per Mac</span></div>
+</div></header>
+
+<main class="wrap">
+
+<section id="map">
+  <div class="sec-h"><span class="kicker">The picture</span><h2>One request, three hops</h2></div>
+  <p class="lead">Solid = Phase 1. Dashed amber = added in Phase 2. Red = the firewall.</p>
+  <div class="panel mapwrap">
+<svg viewBox="0 0 900 400" role="img" aria-labelledby="mapT mapD" class="map">
+  <title id="mapT">System map</title>
+  <desc id="mapD">A client asks DNS for the name, then connects over HTTPS to the nginx edge, which round-robins to Backend A and Backend B. Phase 2 adds a backup DNS, a standby edge and a firewall around the backends.</desc>
+  <defs>
+    <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="fill-line"/></marker>
+  </defs>
+  <!-- Phase 2 firewall around backends -->
+  <rect x="628" y="108" width="252" height="206" rx="16" class="fw"/>
+  <text x="640" y="130" class="t-p2">Ext C · firewall</text>
+  <!-- boxes -->
+  <g class="box b-ink"><rect x="20" y="190" width="130" height="76" rx="12"/><text x="85" y="224" class="bt">Client</text><text x="85" y="246" class="bs">curl / browser</text></g>
+  <g class="box b-teal"><rect x="215" y="30" width="190" height="76" rx="12"/><text x="310" y="64" class="bt">DNS</text><text x="310" y="86" class="bs">dnsmasq · :53</text></g>
+  <g class="box b-p2"><rect x="445" y="30" width="190" height="76" rx="12"/><text x="540" y="64" class="bt2">Backup DNS</text><text x="540" y="86" class="bs2">Ext A · same records</text></g>
+  <g class="box b-teal"><rect x="300" y="190" width="200" height="76" rx="12"/><text x="400" y="224" class="bt">nginx edge</text><text x="400" y="246" class="bs">TLS · load balancer · :8443</text></g>
+  <g class="box b-p2"><rect x="300" y="310" width="200" height="76" rx="12"/><text x="400" y="344" class="bt2">Standby edge</text><text x="400" y="366" class="bs2">Ext E · same cert</text></g>
+  <g class="box b-ink"><rect x="650" y="146" width="210" height="62" rx="12"/><text x="755" y="174" class="bt">Backend A · :3001</text><text x="755" y="194" class="bs">backends/server.py</text></g>
+  <g class="box b-ink"><rect x="650" y="228" width="210" height="62" rx="12"/><text x="755" y="256" class="bt">Backend B · :3002</text><text x="755" y="276" class="bs">backends/server.py</text></g>
+  <!-- arrows -->
+  <path d="M85 190V68H215" class="ln" marker-end="url(#ar)"/>
+  <circle cx="85" cy="130" r="13" class="num"/><text x="85" y="135" class="nt">1</text>
+  <path d="M150 228H300" class="ln" marker-end="url(#ar)"/>
+  <circle cx="225" cy="228" r="13" class="num"/><text x="225" y="233" class="nt">2</text>
+  <path d="M500 228H568V177H650" class="ln" marker-end="url(#ar)"/>
+  <path d="M568 228V259H650" class="ln" marker-end="url(#ar)"/>
+  <circle cx="568" cy="228" r="13" class="num"/><text x="568" y="233" class="nt">3</text>
+  <path d="M405 68H445" class="ln dash"/>
+  <path d="M400 310V266" class="ln dash" marker-end="url(#ar)"/>
+  <text x="414" y="294" class="t-p2s">DNS cutover</text>
+  <!-- legend -->
+  <text x="640" y="336" class="t-p2">Only the edge may reach :3001 / :3002</text>
+  <text x="20" y="318" class="leg">1  who is app.team1.test?</text>
+  <text x="20" y="340" class="leg">2  HTTPS to the edge</text>
+  <text x="20" y="362" class="leg">3  round robin A, B, A, B</text>
+</svg></div>
+  <div class="key"><span><i></i>Phase 1 path</span><span><i class="d"></i>Phase 2 addition</span></div>
+  <div class="macs">
+    <div class="mac"><b>Mac 1 · Mitul</b><span>DNS · client · controller</span><div class="refs"><a class="ref" href="../macs/mac1-mitul/README.md" title="Open macs/mac1-mitul/README.md"><span>macs/mac1-mitul/README.md</span></a></div></div>
+    <div class="mac"><b>Mac 2 · Vaibhav</b><span>nginx edge · TLS</span><div class="refs"><a class="ref" href="../macs/mac2-vaibhav/README.md" title="Open macs/mac2-vaibhav/README.md"><span>macs/mac2-vaibhav/README.md</span></a></div></div>
+    <div class="mac"><b>Mac 3 · Hardik</b><span>Backend A · :3001</span><div class="refs"><a class="ref" href="../macs/mac3-hardik/README.md" title="Open macs/mac3-hardik/README.md"><span>macs/mac3-hardik/README.md</span></a></div></div>
+    <div class="mac"><b>Mac 4 · Akshat</b><span>Backend B · :3002</span><div class="refs"><a class="ref" href="../macs/mac4-akshat/README.md" title="Open macs/mac4-akshat/README.md"><span>macs/mac4-akshat/README.md</span></a></div></div>
+  </div>
+  <p class="note">Real demo used 2 to 3 Macs with combined roles. Phase 2 reads each Mac's own IP to work out its duties, so any split works.</p>
+</section>
+
+<section id="phase1">
+  <div class="sec-h"><span class="kicker">Phase 1</span><h2>What we built</h2></div>
+  <p class="lead">Seven tasks from the brief. Each card: what it is, the command, where the code lives.</p>
+  <div class="grid">
+<article class="card">
+  <header><span class="badge">A</span><h3>LAN</h3></header>
+  <p>All Macs on one Wi‑Fi. Record IP, MAC, gateway. Ping every pair.</p>
+  <div class="cmdw"><div class="cmd"><code>scripts/macos-network-info.sh</code><button type="button" class="copy" aria-label="Copy command">Copy</button></div></div><div class="cmdw"><div class="cmd"><code>ping -c2 &lt;other-mac-ip&gt;</code><button type="button" class="copy" aria-label="Copy command">Copy</button></div></div>
+  <div class="where"><span>Code</span><div class="refs"><a class="ref" href="../scripts/macos-network-info.sh" title="Open scripts/macos-network-info.sh"><span>scripts/macos-network-info.sh</span></a><a class="ref" href="../docs/diagrams.md" title="Open docs/diagrams.md"><span>docs/diagrams.md</span></a></div></div>
+</article>
+<article class="card">
+  <header><span class="badge">B</span><h3>DNS</h3></header>
+  <p>dnsmasq on Mac 1 answers app / api .team1.test with the edge IP. Clients use it only for .test.</p>
+  <div class="cmdw"><div class="cmd"><code>./macs/mac1-mitul/setup.sh</code><button type="button" class="copy" aria-label="Copy command">Copy</button></div></div><div class="cmdw"><div class="cmd"><code>dig @&lt;DNS_IP&gt; app.team1.test</code><button type="button" class="copy" aria-label="Copy command">Copy</button></div></div>
+  <div class="where"><span>Code</span><div class="refs"><a class="ref" href="../config/dns/dnsmasq.conf.template" title="Open config/dns/dnsmasq.conf.template"><span>config/dns/dnsmasq.conf.template</span><b>:17</b></a><a class="ref" href="../scripts/roles.sh" title="Open scripts/roles.sh"><span>scripts/roles.sh</span><b>:23</b></a><a class="ref" href="../scripts/roles.sh" title="Open scripts/roles.sh"><span>scripts/roles.sh</span><b>:63</b></a><a class="ref" href="../tests/test_dns.sh" title="Open tests/test_dns.sh"><span>tests/test_dns.sh</span></a></div></div>
+</article>
+<article class="card">
+  <header><span class="badge">C</span><h3>Backends</h3></header>
+  <p>One tiny Python server. A on :3001, B on :3002. Every reply carries an X-Backend header.</p>
+  <div class="cmdw"><div class="cmd"><code>./macs/mac3-hardik/setup.sh</code><button type="button" class="copy" aria-label="Copy command">Copy</button></div></div><div class="cmdw"><div class="cmd"><code>curl -i http://&lt;backend-ip&gt;:3001/api/status</code><button type="button" class="copy" aria-label="Copy command">Copy</button></div></div>
+  <div class="where"><span>Code</span><div class="refs"><a class="ref" href="../backends/server.py" title="Open backends/server.py"><span>backends/server.py</span><b>:34</b></a><a class="ref" href="../backends/server.py" title="Open backends/server.py"><span>backends/server.py</span><b>:68</b></a><a class="ref" href="../scripts/roles.sh" title="Open scripts/roles.sh"><span>scripts/roles.sh</span><b>:197</b></a><a class="ref" href="../tests/test_backends.sh" title="Open tests/test_backends.sh"><span>tests/test_backends.sh</span></a></div></div>
+</article>
+<article class="card">
+  <header><span class="badge">D</span><h3>Edge + load balancer</h3></header>
+  <p>nginx on Mac 2 gives one name, one door. Round robin A, B, A, B.</p>
+  <div class="cmdw"><div class="cmd"><code>./macs/mac2-vaibhav/setup.sh</code><button type="button" class="copy" aria-label="Copy command">Copy</button></div></div><div class="cmdw"><div class="cmd"><code>for i in 1 2 3 4; do curl -s https://app.team1.test:8443/api/status; done</code><button type="button" class="copy" aria-label="Copy command">Copy</button></div></div>
+  <div class="where"><span>Code</span><div class="refs"><a class="ref" href="../config/nginx/nginx.conf.template" title="Open config/nginx/nginx.conf.template"><span>config/nginx/nginx.conf.template</span><b>:26</b></a><a class="ref" href="../scripts/roles.sh" title="Open scripts/roles.sh"><span>scripts/roles.sh</span><b>:161</b></a><a class="ref" href="../tests/test_load_balancing.sh" title="Open tests/test_load_balancing.sh"><span>tests/test_load_balancing.sh</span></a></div></div>
+</article>
+<article class="card">
+  <header><span class="badge">E</span><h3>TLS</h3></header>
+  <p>Our own CA signs a certificate for both names (SAN). Clients trust the CA, so no curl -k.</p>
+  <div class="cmdw"><div class="cmd"><code>scripts/create-local-ca.sh</code><button type="button" class="copy" aria-label="Copy command">Copy</button></div><small class="on">on the edge</small></div><div class="cmdw"><div class="cmd"><code>scripts/install-ca.sh</code><button type="button" class="copy" aria-label="Copy command">Copy</button></div><small class="on">on every client</small></div>
+  <div class="where"><span>Code</span><div class="refs"><a class="ref" href="../scripts/create-local-ca.sh" title="Open scripts/create-local-ca.sh"><span>scripts/create-local-ca.sh</span><b>:49</b></a><a class="ref" href="../scripts/create-local-ca.sh" title="Open scripts/create-local-ca.sh"><span>scripts/create-local-ca.sh</span><b>:53</b></a><a class="ref" href="../scripts/install-ca.sh" title="Open scripts/install-ca.sh"><span>scripts/install-ca.sh</span><b>:38</b></a><a class="ref" href="../config/nginx/nginx.conf.template" title="Open config/nginx/nginx.conf.template"><span>config/nginx/nginx.conf.template</span><b>:39</b></a><a class="ref" href="../tests/test_tls.sh" title="Open tests/test_tls.sh"><span>tests/test_tls.sh</span></a></div></div>
+</article>
+<article class="card">
+  <header><span class="badge">F</span><h3>Caching</h3></header>
+  <p>Backends send Cache-Control and an ETag. A repeat request gets 304 Not Modified.</p>
+  <div class="cmdw"><div class="cmd"><code>curl -I https://app.team1.test:8443/api/cacheable</code><button type="button" class="copy" aria-label="Copy command">Copy</button></div></div>
+  <div class="where"><span>Code</span><div class="refs"><a class="ref" href="../backends/server.py" title="Open backends/server.py"><span>backends/server.py</span><b>:75</b></a><a class="ref" href="../tests/test_cache.sh" title="Open tests/test_cache.sh"><span>tests/test_cache.sh</span></a></div></div>
+</article>
+<article class="card">
+  <header><span class="badge">G</span><h3>Packets</h3></header>
+  <p>Capture DNS, the TCP handshake and the TLS handshake. Save the evidence.</p>
+  <div class="cmdw"><div class="cmd"><code>scripts/capture-packets.sh 60</code><button type="button" class="copy" aria-label="Copy command">Copy</button></div></div><div class="cmdw"><div class="cmd"><code>./bin/collect-evidence</code><button type="button" class="copy" aria-label="Copy command">Copy</button></div></div>
+  <div class="where"><span>Code</span><div class="refs"><a class="ref" href="../scripts/capture-packets.sh" title="Open scripts/capture-packets.sh"><span>scripts/capture-packets.sh</span></a><a class="ref" href="../bin/collect-evidence" title="Open bin/collect-evidence"><span>bin/collect-evidence</span></a></div></div>
+</article></div>
+  <h3 style="margin:28px 0 4px;font-size:22px">Daily commands</h3>
+  <div class="daily"><div><div class="cmdw"><div class="cmd"><code>./bin/start</code><button type="button" class="copy" aria-label="Copy command">Copy</button></div></div><span>Start this Mac's services</span><div class="refs"><a class="ref" href="../bin/start" title="Open bin/start"><span>bin/start</span></a></div></div><div><div class="cmdw"><div class="cmd"><code>./bin/status</code><button type="button" class="copy" aria-label="Copy command">Copy</button></div></div><span>Is everything up? (real requests)</span><div class="refs"><a class="ref" href="../bin/status" title="Open bin/status"><span>bin/status</span></a></div></div><div><div class="cmdw"><div class="cmd"><code>./bin/test-all</code><button type="button" class="copy" aria-label="Copy command">Copy</button></div></div><span>All 7 Phase 1 tests</span><div class="refs"><a class="ref" href="../bin/test-all" title="Open bin/test-all"><span>bin/test-all</span></a></div></div><div><div class="cmdw"><div class="cmd"><code>./bin/doctor</code><button type="button" class="copy" aria-label="Copy command">Copy</button></div></div><span>First failing layer + why</span><div class="refs"><a class="ref" href="../bin/doctor" title="Open bin/doctor"><span>bin/doctor</span><b>:33</b></a></div></div><div><div class="cmdw"><div class="cmd"><code>./bin/failure-demo &lt;name&gt; break|rollback</code><button type="button" class="copy" aria-label="Copy command">Copy</button></div></div><span>Break it on purpose, safely</span><div class="refs"><a class="ref" href="../bin/failure-demo" title="Open bin/failure-demo"><span>bin/failure-demo</span></a></div></div><div><div class="cmdw"><div class="cmd"><code>./bin/teardown</code><button type="button" class="copy" aria-label="Copy command">Copy</button></div></div><span>Undo everything setup did</span><div class="refs"><a class="ref" href="../bin/teardown" title="Open bin/teardown"><span>bin/teardown</span></a></div></div></div>
+</section>
+
+<section id="phase2">
+  <div class="sec-h"><span class="kicker">Phase 2</span><h2>What we broke, and how it recovered</h2></div>
+  <p class="lead">Six extensions. Same network, nothing rebuilt. Every demo saves a transcript to <code>evidence/phase2/</code> and puts the system back afterwards.</p>
+  <div class="panel" style="display:grid;gap:10px;margin-bottom:16px">
+    <b>Setup: the same command on every Mac</b>
+    <div class="cmdw"><div class="cmd"><code>./bin/phase2 setup</code><button type="button" class="copy" aria-label="Copy command">Copy</button></div></div>
+    <div class="where"><span>Code</span><div class="refs"><a class="ref" href="../scripts/phase2.sh" title="Open scripts/phase2.sh"><span>scripts/phase2.sh</span><b>:115</b></a><a class="ref" href="../bin/phase2" title="Open bin/phase2"><span>bin/phase2</span><b>:30</b></a><a class="ref" href="../tests/test_phase2.sh" title="Open tests/test_phase2.sh"><span>tests/test_phase2.sh</span></a></div></div>
+    <span style="color:var(--muted);font-size:14px">Then <code>./bin/phase2 test</code> for PASS / FAIL on A–E. Undo: <code>./bin/phase2 rollback</code>.</span>
+  </div>
+  <div class="grid">
+<article class="card p2" id="ext-a">
+  <header><span class="badge amber">A</span><h3>Backup DNS</h3><span class="status ok">recorded</span></header>
+  <p class="ask"><b>Asked:</b> Stop the primary DNS. Clients must keep resolving.</p>
+  <div class="vis"><div class="duo"><div class="node dead"><small>Primary DNS</small><b>stopped</b><i>dig → timed out</i></div><div class="node live"><small>Backup DNS</small><b>answers</b><i>same records</i></div></div><p class="res">curl <b>http=200</b> with the primary down</p></div>
+  <p class="why"><b>Why it works:</b> The resolver file lists two nameservers. The second is used when the first is silent.</p>
+  <div class="cmdw"><div class="cmd"><code>./bin/phase2 dns-failover</code><button type="button" class="copy" aria-label="Copy command">Copy</button></div><small class="on">on Mac 1</small></div>
+  <div class="where"><span>Code</span><div class="refs"><a class="ref" href="../scripts/phase2.sh" title="Open scripts/phase2.sh"><span>scripts/phase2.sh</span><b>:179</b></a><a class="ref" href="../scripts/phase2.sh" title="Open scripts/phase2.sh"><span>scripts/phase2.sh</span><b>:176</b></a><a class="ref" href="../scripts/roles.sh" title="Open scripts/roles.sh"><span>scripts/roles.sh</span><b>:63</b></a></div><a class="ref ev" href="../evidence/phase2/20261122-231906-dns-failover.txt"><span>evidence/phase2/…dns-failover.txt</span></a></div>
+</article>
+<article class="card p2" id="ext-b">
+  <header><span class="badge amber">B</span><h3>TTL and cache</h3><span class="status ok">recorded</span></header>
+  <p class="ask"><b>Asked:</b> Short TTL, change a record, see the stale cache, then flush.</p>
+  <div class="vis"><div class="bar"><span class="old" style="flex:39">client still sees OLD ip · 39 s</span><span class="new" style="flex:12">NEW</span></div><p class="res">TTL 30 s → client switched at <b>~39 s</b>. Flush = instant.</p></div>
+  <p class="why"><b>Why it works:</b> dig never caches. The OS resolver keeps the answer until the TTL ends.</p>
+  <div class="cmdw"><div class="cmd"><code>./bin/phase2 ttl</code><button type="button" class="copy" aria-label="Copy command">Copy</button></div><small class="on">on Mac 1</small></div><div class="cmdw"><div class="cmd"><code>sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder</code><button type="button" class="copy" aria-label="Copy command">Copy</button></div></div>
+  <div class="where"><span>Code</span><div class="refs"><a class="ref" href="../scripts/phase2.sh" title="Open scripts/phase2.sh"><span>scripts/phase2.sh</span><b>:214</b></a><a class="ref" href="../config/dns/dnsmasq.conf.template" title="Open config/dns/dnsmasq.conf.template"><span>config/dns/dnsmasq.conf.template</span><b>:21</b></a><a class="ref" href="../scripts/roles.sh" title="Open scripts/roles.sh"><span>scripts/roles.sh</span><b>:92</b></a></div><a class="ref ev" href="../evidence/phase2/20261122-232105-ttl.txt"><span>evidence/phase2/…ttl.txt</span></a></div>
+</article>
+<article class="card p2" id="ext-c">
+  <header><span class="badge amber">C</span><h3>Isolation</h3><span class="status todo">re-run needed</span></header>
+  <p class="ask"><b>Asked:</b> Only the edge may reach ports 3001 / 3002. Roll back after.</p>
+  <div class="vis"><pre class="rules"><span class="g">pass  in quick inet proto tcp from { EDGE, STANDBY } to any port 3002</span>
+<span class="r">block drop in quick inet proto tcp from any to any port 3002</span></pre><p class="res">First match wins (<b>quick</b>). Drop = silent timeout.</p></div>
+  <p class="why"><b>Why it works:</b> A firewall filters on source IP. Rules live in a pf anchor, so /etc/pf.conf is never edited.</p>
+  <div class="cmdw"><div class="cmd"><code>./bin/phase2 isolate on</code><button type="button" class="copy" aria-label="Copy command">Copy</button></div><small class="on">on each backend Mac</small></div><div class="cmdw"><div class="cmd"><code>./bin/phase2 isolate test</code><button type="button" class="copy" aria-label="Copy command">Copy</button></div><small class="on">on the edge, then a client</small></div><div class="cmdw"><div class="cmd"><code>./bin/phase2 isolate off</code><button type="button" class="copy" aria-label="Copy command">Copy</button></div></div>
+  <div class="where"><span>Code</span><div class="refs"><a class="ref" href="../scripts/phase2.sh" title="Open scripts/phase2.sh"><span>scripts/phase2.sh</span><b>:249</b></a><a class="ref" href="../scripts/phase2.sh" title="Open scripts/phase2.sh"><span>scripts/phase2.sh</span><b>:268</b></a><a class="ref" href="../scripts/phase2.sh" title="Open scripts/phase2.sh"><span>scripts/phase2.sh</span><b>:285</b></a><a class="ref" href="../scripts/phase2.sh" title="Open scripts/phase2.sh"><span>scripts/phase2.sh</span><b>:296</b></a></div><a class="ref ev" href="../evidence/phase2/20261122-233003-isolation-test.txt"><span>evidence/phase2/…isolation-test.txt</span></a></div>
+</article>
+<article class="card p2" id="ext-d">
+  <header><span class="badge amber">D</span><h3>Backend failover</h3><span class="status ok">recorded</span></header>
+  <p class="ask"><b>Asked:</b> Stop A, B keeps serving, restart A. Name the single point of failure.</p>
+  <div class="vis"><div class="seq"><small>healthy</small><div class="chips"><span class="chip a">A</span><span class="chip b">B</span><span class="chip a">A</span><span class="chip b">B</span><span class="chip a">A</span><span class="chip b">B</span></div><small>A stopped · all HTTP 200</small><div class="chips"><span class="chip b">B</span><span class="chip b">B</span><span class="chip b">B</span><span class="chip b">B</span><span class="chip b">B</span><span class="chip b">B</span></div><small>A back</small><div class="chips"><span class="chip a">A</span><span class="chip b">B</span><span class="chip a">A</span><span class="chip b">B</span><span class="chip a">A</span><span class="chip b">B</span></div></div></div>
+  <p class="why"><b>Why it works:</b> nginx marks the failed server for 5 s and retries the same request on the other.</p>
+  <div class="cmdw"><div class="cmd"><code>./bin/phase2 failover</code><button type="button" class="copy" aria-label="Copy command">Copy</button></div><small class="on">anywhere</small></div>
+  <div class="where"><span>Code</span><div class="refs"><a class="ref" href="../scripts/phase2.sh" title="Open scripts/phase2.sh"><span>scripts/phase2.sh</span><b>:314</b></a><a class="ref" href="../config/nginx/nginx.conf.template" title="Open config/nginx/nginx.conf.template"><span>config/nginx/nginx.conf.template</span><b>:27</b></a><a class="ref" href="../config/nginx/nginx.conf.template" title="Open config/nginx/nginx.conf.template"><span>config/nginx/nginx.conf.template</span><b>:56</b></a></div><a class="ref ev" href="../evidence/phase2/20261122-233154-failover.txt"><span>evidence/phase2/…failover.txt</span></a></div>
+</article>
+<article class="card p2" id="ext-e">
+  <header><span class="badge amber">E</span><h3>Standby edge</h3><span class="status ok">recorded</span></header>
+  <p class="ask"><b>Asked:</b> Second nginx. Move DNS to it. Show the TTL effect.</p>
+  <div class="vis"><div class="bar"><span class="old" style="flex:38">answered by PRIMARY edge · 38 s</span><span class="new" style="flex:8">STANDBY</span></div><p class="res">Server flips at once. Client flips at <b>t+41 s</b>.</p></div>
+  <p class="why"><b>Why it works:</b> A certificate binds names, not IPs, so the same cert works on the standby. X-Edge shows who answered.</p>
+  <div class="cmdw"><div class="cmd"><code>./bin/phase2 cutover</code><button type="button" class="copy" aria-label="Copy command">Copy</button></div><small class="on">on Mac 1</small></div><div class="cmdw"><div class="cmd"><code>./bin/phase2 watch</code><button type="button" class="copy" aria-label="Copy command">Copy</button></div><small class="on">on a client</small></div><div class="cmdw"><div class="cmd"><code>./bin/phase2 point primary|standby</code><button type="button" class="copy" aria-label="Copy command">Copy</button></div><small class="on">both DNS Macs</small></div>
+  <div class="where"><span>Code</span><div class="refs"><a class="ref" href="../scripts/phase2.sh" title="Open scripts/phase2.sh"><span>scripts/phase2.sh</span><b>:404</b></a><a class="ref" href="../scripts/phase2.sh" title="Open scripts/phase2.sh"><span>scripts/phase2.sh</span><b>:360</b></a><a class="ref" href="../scripts/phase2.sh" title="Open scripts/phase2.sh"><span>scripts/phase2.sh</span><b>:391</b></a><a class="ref" href="../config/nginx/nginx.conf.template" title="Open config/nginx/nginx.conf.template"><span>config/nginx/nginx.conf.template</span><b>:44</b></a></div><a class="ref ev" href="../evidence/phase2/20261122-233401-cutover.txt"><span>evidence/phase2/…cutover.txt</span></a></div>
+</article>
+<article class="card p2" id="ext-f">
+  <header><span class="badge amber">F</span><h3>Troubleshooting</h3><span class="status info">rehearse</span></header>
+  <p class="ask"><b>Asked:</b> Faculty breaks something. Find the layer.</p>
+  <div class="vis"><div class="ladder"><span>name</span><span>port</span><span>cert</span><span>answer</span></div><p class="res">Stop at the <b>first</b> layer that fails.</p></div>
+  <p class="why"><b>Why it works:</b> bin/doctor walks the request path in order. drill injects one hidden fault to practise on.</p>
+  <div class="cmdw"><div class="cmd"><code>./bin/doctor</code><button type="button" class="copy" aria-label="Copy command">Copy</button></div></div><div class="cmdw"><div class="cmd"><code>./bin/phase2 drill</code><button type="button" class="copy" aria-label="Copy command">Copy</button></div><small class="on">then: drill reveal / drill fix</small></div>
+  <div class="where"><span>Code</span><div class="refs"><a class="ref" href="../bin/doctor" title="Open bin/doctor"><span>bin/doctor</span><b>:33</b></a><a class="ref" href="../bin/doctor" title="Open bin/doctor"><span>bin/doctor</span><b>:77</b></a><a class="ref" href="../scripts/phase2.sh" title="Open scripts/phase2.sh"><span>scripts/phase2.sh</span><b>:453</b></a></div></div>
+</article></div>
+</section>
+
+<section id="find">
+  <div class="sec-h"><span class="kicker">Extension F</span><h2>Something broke? Ask in this order</h2></div>
+  <p class="lead">Follow the path of the request. The first layer that fails is the problem. Tap a step.</p>
+  
+  <details open><summary><span class="n">1</span>Name<em>Does the name become an IP?</em></summary>
+    <div class="dbody"><div class="cmdw"><div class="cmd"><code>dig @&lt;DNS_IP&gt; app.team1.test</code><button type="button" class="copy" aria-label="Copy command">Copy</button></div></div><p class="fail">Times out or wrong IP → DNS: dnsmasq stopped, wrong record, wrong resolver.</p><div class="refs"><a class="ref" href="../bin/doctor" title="Open bin/doctor"><span>bin/doctor</span><b>:36</b></a><a class="ref" href="../scripts/checks.sh" title="Open scripts/checks.sh"><span>scripts/checks.sh</span><b>:35</b></a></div></div></details>
+  <details><summary><span class="n">2</span>Door<em>Can we knock on the port?</em></summary>
+    <div class="dbody"><div class="cmdw"><div class="cmd"><code>nc -vz &lt;EDGE_IP&gt; 8443</code><button type="button" class="copy" aria-label="Copy command">Copy</button></div></div><p class="fail">Refused or timeout → nginx down, wrong port, or a firewall rule.</p><div class="refs"><a class="ref" href="../bin/doctor" title="Open bin/doctor"><span>bin/doctor</span><b>:39</b></a><a class="ref" href="../scripts/checks.sh" title="Open scripts/checks.sh"><span>scripts/checks.sh</span><b>:37</b></a></div></div></details>
+  <details><summary><span class="n">3</span>ID<em>Is the certificate trusted?</em></summary>
+    <div class="dbody"><div class="cmdw"><div class="cmd"><code>openssl s_client -connect &lt;EDGE_IP&gt;:8443 -servername app.team1.test -CAfile pki/ca.crt</code><button type="button" class="copy" aria-label="Copy command">Copy</button></div></div><p class="fail">Verify error → CA not installed, wrong SAN, expired or swapped cert.</p><div class="refs"><a class="ref" href="../bin/doctor" title="Open bin/doctor"><span>bin/doctor</span><b>:42</b></a><a class="ref" href="../scripts/checks.sh" title="Open scripts/checks.sh"><span>scripts/checks.sh</span><b>:38</b></a></div></div></details>
+  <details><summary><span class="n">4</span>Answer<em>Does the site reply?</em></summary>
+    <div class="dbody"><div class="cmdw"><div class="cmd"><code>curl -i https://app.team1.test:8443/api/status</code><button type="button" class="copy" aria-label="Copy command">Copy</button></div></div><p class="fail">502 → edge is up but both backends failed. One backend down still works (failover).</p><div class="refs"><a class="ref" href="../bin/doctor" title="Open bin/doctor"><span>bin/doctor</span><b>:68</b></a><a class="ref" href="../scripts/checks.sh" title="Open scripts/checks.sh"><span>scripts/checks.sh</span><b>:42</b></a></div></div></details>
+  <p class="note"><b>Single point of failure:</b> the edge nginx. Our fix today is a standby edge plus a DNS cutover (manual, about one TTL). The real fix is a floating IP shared by two edges, or DNS health checks that move the record automatically.</p>
+</section>
+
+<section id="commands">
+  <div class="sec-h"><span class="kicker">Cheat sheet</span><h2>Every command, and where it lives</h2></div>
+  <input class="search" type="search" id="q" placeholder="Filter: dns, edge, failover, firewall…" aria-label="Filter commands">
+  <div class="tblwrap"><table class="tbl" id="tbl">
+    <thead><tr><th>Command</th><th class="hide-s">Run on</th><th>Does</th><th>Defined in</th></tr></thead>
+    <tbody><tr><td><div class="cmdw"><div class="cmd"><code>./macs/mac1-mitul/setup.sh</code><button type="button" class="copy" aria-label="Copy command">Copy</button></div></div></td><td class="hide-s">Mac 1</td><td>Phase 1 setup (DNS + client)</td><td><a class="ref" href="../macs/mac1-mitul/setup.sh" title="Open macs/mac1-mitul/setup.sh"><span>macs/mac1-mitul/setup.sh</span></a></td></tr><tr><td><div class="cmdw"><div class="cmd"><code>./macs/mac2-vaibhav/setup.sh</code><button type="button" class="copy" aria-label="Copy command">Copy</button></div></div></td><td class="hide-s">Mac 2</td><td>Phase 1 setup (edge)</td><td><a class="ref" href="../macs/mac2-vaibhav/setup.sh" title="Open macs/mac2-vaibhav/setup.sh"><span>macs/mac2-vaibhav/setup.sh</span></a></td></tr><tr><td><div class="cmdw"><div class="cmd"><code>./macs/mac3-hardik/setup.sh</code><button type="button" class="copy" aria-label="Copy command">Copy</button></div></div></td><td class="hide-s">Mac 3</td><td>Phase 1 setup (Backend A)</td><td><a class="ref" href="../macs/mac3-hardik/setup.sh" title="Open macs/mac3-hardik/setup.sh"><span>macs/mac3-hardik/setup.sh</span></a></td></tr><tr><td><div class="cmdw"><div class="cmd"><code>./macs/mac4-akshat/setup.sh</code><button type="button" class="copy" aria-label="Copy command">Copy</button></div></div></td><td class="hide-s">Mac 4</td><td>Phase 1 setup (Backend B)</td><td><a class="ref" href="../macs/mac4-akshat/setup.sh" title="Open macs/mac4-akshat/setup.sh"><span>macs/mac4-akshat/setup.sh</span></a></td></tr><tr><td><div class="cmdw"><div class="cmd"><code>./bin/start</code><button type="button" class="copy" aria-label="Copy command">Copy</button></div></div></td><td class="hide-s">any</td><td>Start this Mac's services</td><td><a class="ref" href="../bin/start" title="Open bin/start"><span>bin/start</span></a></td></tr><tr><td><div class="cmdw"><div class="cmd"><code>./bin/status</code><button type="button" class="copy" aria-label="Copy command">Copy</button></div></div></td><td class="hide-s">any</td><td>System view with real requests</td><td><a class="ref" href="../bin/status" title="Open bin/status"><span>bin/status</span></a></td></tr><tr><td><div class="cmdw"><div class="cmd"><code>./bin/test-all</code><button type="button" class="copy" aria-label="Copy command">Copy</button></div></div></td><td class="hide-s">any</td><td>Run all Phase 1 tests</td><td><a class="ref" href="../bin/test-all" title="Open bin/test-all"><span>bin/test-all</span></a></td></tr><tr><td><div class="cmdw"><div class="cmd"><code>./bin/doctor</code><button type="button" class="copy" aria-label="Copy command">Copy</button></div></div></td><td class="hide-s">any</td><td>First failing layer + causes</td><td><a class="ref" href="../bin/doctor" title="Open bin/doctor"><span>bin/doctor</span><b>:33</b></a></td></tr><tr><td><div class="cmdw"><div class="cmd"><code>./bin/collect-evidence</code><button type="button" class="copy" aria-label="Copy command">Copy</button></div></div></td><td class="hide-s">any</td><td>Save evidence to evidence/<time>/</td><td><a class="ref" href="../bin/collect-evidence" title="Open bin/collect-evidence"><span>bin/collect-evidence</span></a></td></tr><tr><td><div class="cmdw"><div class="cmd"><code>./bin/failure-demo &lt;name&gt; break|rollback</code><button type="button" class="copy" aria-label="Copy command">Copy</button></div></div></td><td class="hide-s">varies</td><td>Reproducible Phase 1 faults</td><td><a class="ref" href="../bin/failure-demo" title="Open bin/failure-demo"><span>bin/failure-demo</span></a></td></tr><tr><td><div class="cmdw"><div class="cmd"><code>scripts/create-local-ca.sh</code><button type="button" class="copy" aria-label="Copy command">Copy</button></div></div></td><td class="hide-s">edge</td><td>Create CA + server cert</td><td><a class="ref" href="../scripts/create-local-ca.sh" title="Open scripts/create-local-ca.sh"><span>scripts/create-local-ca.sh</span><b>:18</b></a></td></tr><tr><td><div class="cmdw"><div class="cmd"><code>scripts/install-ca.sh</code><button type="button" class="copy" aria-label="Copy command">Copy</button></div></div></td><td class="hide-s">clients</td><td>Trust the CA (System keychain)</td><td><a class="ref" href="../scripts/install-ca.sh" title="Open scripts/install-ca.sh"><span>scripts/install-ca.sh</span><b>:38</b></a></td></tr><tr><td><div class="cmdw"><div class="cmd"><code>scripts/capture-packets.sh 60</code><button type="button" class="copy" aria-label="Copy command">Copy</button></div></div></td><td class="hide-s">any</td><td>60 s tcpdump for Wireshark</td><td><a class="ref" href="../scripts/capture-packets.sh" title="Open scripts/capture-packets.sh"><span>scripts/capture-packets.sh</span></a></td></tr><tr><td><div class="cmdw"><div class="cmd"><code>./bin/phase2 setup</code><button type="button" class="copy" aria-label="Copy command">Copy</button></div></div></td><td class="hide-s">every Mac</td><td>Arm what this Mac is responsible for</td><td><a class="ref" href="../scripts/phase2.sh" title="Open scripts/phase2.sh"><span>scripts/phase2.sh</span><b>:115</b></a></td></tr><tr><td><div class="cmdw"><div class="cmd"><code>./bin/phase2 test</code><button type="button" class="copy" aria-label="Copy command">Copy</button></div></div></td><td class="hide-s">any</td><td>PASS / FAIL for A to E</td><td><a class="ref" href="../tests/test_phase2.sh" title="Open tests/test_phase2.sh"><span>tests/test_phase2.sh</span></a></td></tr><tr><td><div class="cmdw"><div class="cmd"><code>./bin/phase2 status</code><button type="button" class="copy" aria-label="Copy command">Copy</button></div></div></td><td class="hide-s">any</td><td>Where things stand</td><td><a class="ref" href="../scripts/phase2.sh" title="Open scripts/phase2.sh"><span>scripts/phase2.sh</span><b>:473</b></a></td></tr><tr><td><div class="cmdw"><div class="cmd"><code>./bin/phase2 dns-failover</code><button type="button" class="copy" aria-label="Copy command">Copy</button></div></div></td><td class="hide-s">Mac 1</td><td>Extension A demo</td><td><a class="ref" href="../scripts/phase2.sh" title="Open scripts/phase2.sh"><span>scripts/phase2.sh</span><b>:179</b></a></td></tr><tr><td><div class="cmdw"><div class="cmd"><code>./bin/phase2 ttl</code><button type="button" class="copy" aria-label="Copy command">Copy</button></div></div></td><td class="hide-s">Mac 1</td><td>Extension B demo</td><td><a class="ref" href="../scripts/phase2.sh" title="Open scripts/phase2.sh"><span>scripts/phase2.sh</span><b>:214</b></a></td></tr><tr><td><div class="cmdw"><div class="cmd"><code>./bin/phase2 isolate on|off|test</code><button type="button" class="copy" aria-label="Copy command">Copy</button></div></div></td><td class="hide-s">backends / any</td><td>Extension C firewall</td><td><a class="ref" href="../scripts/phase2.sh" title="Open scripts/phase2.sh"><span>scripts/phase2.sh</span><b>:268</b></a></td></tr><tr><td><div class="cmdw"><div class="cmd"><code>./bin/phase2 failover [a|b]</code><button type="button" class="copy" aria-label="Copy command">Copy</button></div></div></td><td class="hide-s">any</td><td>Extension D demo</td><td><a class="ref" href="../scripts/phase2.sh" title="Open scripts/phase2.sh"><span>scripts/phase2.sh</span><b>:314</b></a></td></tr><tr><td><div class="cmdw"><div class="cmd"><code>./bin/phase2 cutover [--stay]</code><button type="button" class="copy" aria-label="Copy command">Copy</button></div></div></td><td class="hide-s">Mac 1</td><td>Extension E demo</td><td><a class="ref" href="../scripts/phase2.sh" title="Open scripts/phase2.sh"><span>scripts/phase2.sh</span><b>:404</b></a></td></tr><tr><td><div class="cmdw"><div class="cmd"><code>./bin/phase2 point primary|standby</code><button type="button" class="copy" aria-label="Copy command">Copy</button></div></div></td><td class="hide-s">both DNS Macs</td><td>Re-point DNS records</td><td><a class="ref" href="../scripts/phase2.sh" title="Open scripts/phase2.sh"><span>scripts/phase2.sh</span><b>:391</b></a></td></tr><tr><td><div class="cmdw"><div class="cmd"><code>./bin/phase2 watch</code><button type="button" class="copy" aria-label="Copy command">Copy</button></div></div></td><td class="hide-s">client</td><td>Live: which IP + which edge</td><td><a class="ref" href="../scripts/phase2.sh" title="Open scripts/phase2.sh"><span>scripts/phase2.sh</span><b>:401</b></a></td></tr><tr><td><div class="cmdw"><div class="cmd"><code>./bin/phase2 drill [reveal|fix]</code><button type="button" class="copy" aria-label="Copy command">Copy</button></div></div></td><td class="hide-s">any</td><td>Hidden fault to practise on</td><td><a class="ref" href="../scripts/phase2.sh" title="Open scripts/phase2.sh"><span>scripts/phase2.sh</span><b>:453</b></a></td></tr><tr><td><div class="cmdw"><div class="cmd"><code>./bin/phase2 rollback</code><button type="button" class="copy" aria-label="Copy command">Copy</button></div></div></td><td class="hide-s">every Mac</td><td>Undo all Phase 2 changes</td><td><a class="ref" href="../scripts/phase2.sh" title="Open scripts/phase2.sh"><span>scripts/phase2.sh</span><b>:490</b></a></td></tr></tbody>
+  </table></div>
+</section>
+
+<footer>
+  <p class="note"><b>Honest status.</b> Recorded runs exist in <a href="../evidence/phase2/">evidence/phase2/</a> for A, B, D and E. The Extension C recording showed Backend A still open, so re-run <code>isolate on</code> on both backend Macs and record <code>isolate test</code> again. pf behaviour and the OS DNS cache are macOS-specific: run the demos on the real Macs before the evaluation. Phase 1 evidence folders are empty; <code>./bin/collect-evidence</code> fills them.</p>
+  Links open files relative to this page (<code>docs/</code>), so keep it inside the repo.
+</footer>
+</main>
+
+<script>
+document.addEventListener("click", function (e) {
+  var b = e.target.closest(".copy"); if (!b) return;
+  var t = b.parentElement.querySelector("code").textContent;
+  function ok(){ b.textContent = "Copied"; b.classList.add("done"); setTimeout(function(){ b.textContent = "Copy"; b.classList.remove("done"); }, 1400); }
+  if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(t).then(ok, function(){ fallback(t); ok(); }); } else { fallback(t); ok(); }
+  function fallback(s){ var a = document.createElement("textarea"); a.value = s; document.body.appendChild(a); a.select(); try { document.execCommand("copy"); } catch (x) {} a.remove(); }
+});
+var q = document.getElementById("q");
+q.addEventListener("input", function () {
+  var v = q.value.toLowerCase();
+  document.querySelectorAll("#tbl tbody tr").forEach(function (r) { r.style.display = r.textContent.toLowerCase().indexOf(v) > -1 ? "" : "none"; });
+});
+</script>
+</body>
+</html>

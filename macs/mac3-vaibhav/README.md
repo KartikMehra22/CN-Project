@@ -1,6 +1,6 @@
-# Mac 3 - Hardik - Backend A
+# Mac 3 - Vaibhav - Backend A
 
-**Setup (once, idempotent):** `./macs/mac3-hardik/setup.sh`   |   **Start:** `./macs/mac3-hardik/start.sh` (or `./bin/start`)   |   **Stop:** `./macs/mac3-hardik/stop.sh`   |   **Status:** `./macs/mac3-hardik/status.sh` (or `./bin/status`)
+**Setup (once, idempotent):** `./macs/mac3-vaibhav/setup.sh`   |   **Start:** `./macs/mac3-vaibhav/start.sh` (or `./bin/start`)   |   **Stop:** `./macs/mac3-vaibhav/stop.sh`   |   **Status:** `./macs/mac3-vaibhav/status.sh` (or `./bin/status`)
 
 **Software installed:** Python 3 (brew if missing); tunnel mode: cloudflared
 **Ports:** 3001/tcp (0.0.0.0); tunnel: virtual IP 10.250.0.3 on lo0
@@ -8,7 +8,7 @@
 **Settings:** `~/.config/cn-phase1/project.env` (created by setup)
 
 ## Role in the request flow
-Final hop. Receives plain HTTP from nginx, answers with JSON and `X-Backend: A`. In tunnel mode `cloudflared` makes an outbound connection to Cloudflare and delivers traffic for 10.250.0.3 to this process. Run: `./macs/mac3-hardik/setup.sh --credentials <file>` (tunnel mode).
+Final hop. Receives plain HTTP from nginx, answers with JSON and `X-Backend: A`. In tunnel mode `cloudflared` makes an outbound connection to Cloudflare and delivers traffic for 10.250.0.3 to this process. Run: `./macs/mac3-vaibhav/setup.sh --credentials <file>` (tunnel mode).
 
 ## Common errors
 * Port 3001 in use -> other process.

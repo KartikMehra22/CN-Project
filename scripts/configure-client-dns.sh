@@ -10,5 +10,5 @@ prompt_var TEAM "Team name" team1
 load_config
 prompt_var DNS_IP "Mitul's (DNS server) LAN IP"
 resolver_install "$DNS_IP"
-[ -f "$CN_CA_CERT_REPO" ] && "$(dirname "$0")/install-ca.sh" || warn "pki/ca.crt missing (git pull after Vaibhav pushes it)"
+[ -f "$CN_CA_CERT_REPO" ] && "$(dirname "$0")/install-ca.sh" || warn "pki/ca.crt missing (git pull after Hardik pushes it)"
 "$(command -v dig)" +short -p "$DNS_PORT" "@$DNS_IP" "$APP_DOMAIN" || true

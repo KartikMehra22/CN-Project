@@ -37,7 +37,7 @@ This project demonstrates a multi-tier, multi-machine distributed web infrastruc
                    │ 2. HTTPS Request: https://app.team1.test:8443 (TCP / TLS 1.3)
                    ▼
        ╔═════════════════════════════════════════════════════════════════════════╗
-       ║   MAC 2 (Hardik) — 10.80.3.171                                          ║
+       ║   MAC 2 (Vaibhav) — 10.80.3.171                                          ║
        ║   • Nginx Reverse Proxy & Load Balancer (:8443)                         ║
        ║   • TLS Termination (Custom CA Root & SAN Cert)                         ║
        ║   • Round-Robin Scheduler with Passive Health Probing                   ║
@@ -47,9 +47,9 @@ This project demonstrates a multi-tier, multi-machine distributed web infrastruc
                    │     HTTP/1.1 (TCP :3001)                    │     HTTP/1.1 (TCP :3002)
                    ▼                                             ▼
        ╔═════════════════════════════════════╗       ╔═════════════════════════════════════╗
-       ║   BACKEND A (Hardik's Mac)          ║       ║   BACKEND B (Mitul's Mac)           ║
+       ║   BACKEND A (Vaibhav's Mac)          ║       ║   BACKEND B (Mitul's Mac)           ║
        ║   IP: 10.80.3.171 : 3001            ║       ║   IP: 10.80.3.253 : 3002            ║
-       ║   Owner: Hardik                     ║       ║   Owner: Akshat                     ║
+       ║   Owner: Vaibhav                     ║       ║   Owner: Akshat                     ║
        ║   Header: X-Backend: A              ║       ║   Header: X-Backend: B              ║
        ╚═════════════════════════════════════╝       ╚═════════════════════════════════════╝
 ```
@@ -63,7 +63,7 @@ Every node on the subnet was identified, inventoried, and confirmed through low-
 | Node | Operator | Functional Roles | Interface | IPv4 Address | Subnet Mask | Default Gateway | MAC Address (Layer 2) |
 |---|---|---|---|---|---|---|---|
 | **Mac 1** | Mitul | DNS Server + Client + Backend B | `en0` (Wi-Fi) | `10.80.3.253` | `255.255.255.0` (`/24`) | `10.80.3.250` | `ae:53:53:91:2b:ed` |
-| **Mac 2** | Hardik | Edge Proxy / LB + Backend A | `en0` (Wi-Fi) | `10.80.3.171` | `255.255.255.0` (`/24`) | `10.80.3.250` | `ea:13:22:6c:89:97` |
+| **Mac 2** | Vaibhav | Edge Proxy / LB + Backend A | `en0` (Wi-Fi) | `10.80.3.171` | `255.255.255.0` (`/24`) | `10.80.3.250` | `ea:13:22:6c:89:97` |
 
 ### Link & Layer-3 Verification
 * **Subnet:** `10.80.3.0/24`
@@ -148,8 +148,8 @@ Nginx handles TLS termination and acts as a Layer 7 round-robin reverse proxy.
 #### Nginx Configuration (`~/.config/cn-phase1/generated/nginx.conf`)
 ```nginx
 worker_processes 1;
-pid /Users/hardikmaheshwari/.config/cn-phase1/run/nginx.pid;
-error_log /Users/hardikmaheshwari/Library/Logs/cn-phase1/nginx-error.log info;
+pid /Users/vaibhavmaheshwari/.config/cn-phase1/run/nginx.pid;
+error_log /Users/vaibhavmaheshwari/Library/Logs/cn-phase1/nginx-error.log info;
 
 events { worker_connections 256; }
 
@@ -158,7 +158,7 @@ http {
 
     log_format lb '$remote_addr [$time_local] "$request" $status '
                   'upstream=$upstream_addr backend=$upstream_http_x_backend rt=$request_time';
-    access_log /Users/hardikmaheshwari/Library/Logs/cn-phase1/nginx-access.log lb;
+    access_log /Users/vaibhavmaheshwari/Library/Logs/cn-phase1/nginx-access.log lb;
 
     # Upstream server pool
     upstream project_backends {
@@ -174,8 +174,8 @@ http {
         http2 on;
         server_name app.team1.test api.team1.test;
 
-        ssl_certificate     /Users/hardikmaheshwari/.config/cn-phase1/tls/server.crt;
-        ssl_certificate_key /Users/hardikmaheshwari/.config/cn-phase1/tls/server.key;
+        ssl_certificate     /Users/vaibhavmaheshwari/.config/cn-phase1/tls/server.crt;
+        ssl_certificate_key /Users/vaibhavmaheshwari/.config/cn-phase1/tls/server.key;
         ssl_protocols       TLSv1.2 TLSv1.3;
 
         proxy_http_version 1.1;
@@ -208,7 +208,7 @@ http {
 ### 4.4. Application & Caching Layer (Task C & Task F)
 
 The backend servers are written in Python using standard libraries (`http.server.ThreadingHTTPServer`):
-* **Backend A:** Runs on `10.80.3.171:3001` (Owner: Hardik)
+* **Backend A:** Runs on `10.80.3.171:3001` (Owner: Vaibhav)
 * **Backend B:** Runs on `10.80.3.253:3002` (Owner: Akshat)
 * **Response Header:** Injects `X-Backend: A` or `X-Backend: B`.
 * **Caching Specification:** Serves `/api/cacheable` with:

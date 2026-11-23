@@ -14,7 +14,7 @@ say() { printf '%s\n' "$*"; }
 
 case "$sc:$act" in
   wrong-resolver:explain) cat <<T
-WRONG DNS SERVER ON A CLIENT (run on a client Mac, e.g. Mitul or Vaibhav)
+WRONG DNS SERVER ON A CLIENT (run on a client Mac, e.g. Mitul or Hardik)
  Break   : bin/failure-demo wrong-resolver break
  Observe : dig @192.0.2.53 $APP_DOMAIN / curl $APP_URL -> "Could not resolve host"; but  ping $EDGE_IP  still works.
  Why     : DNS (name->IP) and IP connectivity are independent layers.
@@ -39,7 +39,7 @@ T
 
   backend-a:explain|backend-b:explain|both-backends:explain) cat <<T
 BACKEND(S) STOPPED
- Backend A only : Hardik runs  ./macs/mac3-hardik/stop.sh   (or: bin/failure-demo backend-a break, on Hardik's Mac)
+ Backend A only : Vaibhav runs  ./macs/mac3-vaibhav/stop.sh   (or: bin/failure-demo backend-a break, on Vaibhav's Mac)
  Backend B only : Akshat runs  ./macs/mac4-akshat/stop.sh
  Both           : both owners stop theirs.
  Observe (one)  : ./bin/test-all load-balancing shows only the survivor's letter; requests keep succeeding (first request may take ${UPSTREAM_CONNECT_TIMEOUT} while nginx detects the failure).
@@ -52,10 +52,10 @@ T
   backend-a:break|backend-b:break|both-backends:break|backend-a:rollback|backend-b:rollback|both-backends:rollback)
     verb="${act}"
     case "$ROLE:$sc" in
-      hardik:backend-a|hardik:both-backends|akshat:backend-b|akshat:both-backends)
+      vaibhav:backend-a|vaibhav:both-backends|akshat:backend-b|akshat:both-backends)
         if [ "$verb" = break ]; then "$REPO/scripts/role.sh" "$ROLE" stop; else "$REPO/scripts/role.sh" "$ROLE" start; fi;;
-      *) say "This Mac ($ROLE) does not run that backend. Ask the owner (Hardik = A, Akshat = B) to run:"
-         say "    ./macs/mac3-hardik/$([ "$verb" = break ] && echo stop || echo start).sh   # Backend A"
+      *) say "This Mac ($ROLE) does not run that backend. Ask the owner (Vaibhav = A, Akshat = B) to run:"
+         say "    ./macs/mac3-vaibhav/$([ "$verb" = break ] && echo stop || echo start).sh   # Backend A"
          say "    ./macs/mac4-akshat/$([ "$verb" = break ] && echo stop || echo start).sh   # Backend B";;
     esac;;
 

@@ -12,7 +12,7 @@ DNSMASQ_CONF="$CN_GEN_DIR/dnsmasq.conf"
 dns_render() {
   ensure_dirs
   [ -n "${DNS_IP:-}" ] || die "DNS_IP not set"
-  [ -n "${EDGE_IP:-}" ] || die "EDGE_IP (Vaibhav's IP) not set"
+  [ -n "${EDGE_IP:-}" ] || die "EDGE_IP (Hardik's IP) not set"
   if [ "$DNS_IP" = "127.0.0.1" ]; then DNS_LISTEN="127.0.0.1"; else DNS_LISTEN="127.0.0.1,${DNS_IP}"; fi
   export DNS_LISTEN DNSMASQ_PID
   local DNS_RECORD_IP="${DNS_RECORD_IP:-$EDGE_IP}"   # Phase 2: standby IP after a cutover, or a demo override
@@ -104,7 +104,7 @@ LOG_DIR="$CN_LOG_DIR"
 
 edge_render() {
   ensure_dirs
-  [ -n "${BACKEND_A_HOST:-}" ] && [ -n "${BACKEND_B_HOST:-}" ] || die "Backend addresses not set (HARDIK_LAN_IP/AKSHAT_LAN_IP, or NETWORK_MODE=tunnel)"
+  [ -n "${BACKEND_A_HOST:-}" ] && [ -n "${BACKEND_B_HOST:-}" ] || die "Backend addresses not set (VAIBHAV_LAN_IP/AKSHAT_LAN_IP, or NETWORK_MODE=tunnel)"
   mkdir -p "$NGINX_PREFIX/tmp"
   EDGE_LABEL="${EDGE_LABEL:-$(hostname -s | tr -c 'A-Za-z0-9.-\n' '-')}"
   export NGINX_PID NGINX_PREFIX TLS_CERT TLS_KEY LOG_DIR EDGE_LABEL
@@ -141,7 +141,7 @@ warp-routing:
 Y
     nohup cloudflared tunnel --no-autoupdate --config "$CN_GEN_DIR/cloudflared-edge.yml" run >> "$cf_edge_log" 2>&1 &
   else
-    warn "No edge tunnel credentials found yet ($cred). Vaibhav will only be reachable locally or via WARP."
+    warn "No edge tunnel credentials found yet ($cred). Hardik will only be reachable locally or via WARP."
     return 0
   fi
   echo $! > "$cf_edge_pid"; disown || true
@@ -184,9 +184,9 @@ edge_running() { pid_alive "$NGINX_PID"; }
 # ======================================================= BACKEND (Mac 3 / 4)
 backend_vars() {
   case "$ROLE" in
-    hardik) B_ID=A; B_OWNER="$BACKEND_A_OWNER"; B_PORT="$BACKEND_A_PORT"; B_VIP="$TUNNEL_A_IP"; B_TUN="$TUNNEL_A_NAME";;
+    vaibhav) B_ID=A; B_OWNER="$BACKEND_A_OWNER"; B_PORT="$BACKEND_A_PORT"; B_VIP="$TUNNEL_A_IP"; B_TUN="$TUNNEL_A_NAME";;
     akshat) B_ID=B; B_OWNER="$BACKEND_B_OWNER"; B_PORT="$BACKEND_B_PORT"; B_VIP="$TUNNEL_B_IP"; B_TUN="$TUNNEL_B_NAME";;
-    *) die "backend_vars: ROLE must be hardik or akshat (got '${ROLE:-}')";;
+    *) die "backend_vars: ROLE must be vaibhav or akshat (got '${ROLE:-}')";;
   esac
   B_PID="$CN_RUN_DIR/backend-$(echo "$B_ID" | tr A-Z a-z).pid"
   B_LOG="$CN_LOG_DIR/backend-$(echo "$B_ID" | tr A-Z a-z).log"

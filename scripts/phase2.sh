@@ -23,7 +23,7 @@ p2_is_dns1()    { is_me "$DNS_IP"; }
 p2_is_dns2()    { is_me "$DNS2_IP"; }
 p2_is_edge()    { is_me "$EDGE_IP"; }
 p2_is_standby() { is_me "$STANDBY_EDGE_IP"; }
-p2_is_a()       { is_me "$HARDIK_LAN_IP"; }
+p2_is_a()       { is_me "$VAIBHAV_LAN_IP"; }
 p2_is_b()       { is_me "$AKSHAT_LAN_IP"; }
 p2_is_backend() { p2_is_a || p2_is_b; }
 
@@ -31,7 +31,7 @@ p2_need() {  # p2_need dns1|edge|backend  -> die with a friendly message if this
   case "$1" in
     dns1)    p2_is_dns1 || die "Run this on Mitul's Mac (primary DNS, $DNS_IP). This Mac is $(my_ip).";;
     edge)    p2_is_edge || die "Run this on the edge Mac ($EDGE_IP). This Mac is $(my_ip).";;
-    backend) p2_is_backend || die "Run this on a backend Mac (A=$HARDIK_LAN_IP, B=$AKSHAT_LAN_IP). This Mac is $(my_ip).";;
+    backend) p2_is_backend || die "Run this on a backend Mac (A=$VAIBHAV_LAN_IP, B=$AKSHAT_LAN_IP). This Mac is $(my_ip).";;
   esac
 }
 
@@ -81,8 +81,8 @@ resolver_has_backup() { [ -n "$DNS2_IP" ] && grep -q "nameserver $DNS2_IP" "$RES
 # ------------------------------------------------------------- setup -------
 p2_topology_prompts() {
   prompt_var DNS_IP        "Mitul's (primary DNS, Mac 1) LAN IP"
-  prompt_var EDGE_IP       "Vaibhav's (edge nginx, Mac 2) LAN IP"
-  prompt_var HARDIK_LAN_IP "Hardik's (Backend A, Mac 3) LAN IP"
+  prompt_var EDGE_IP       "Hardik's (edge nginx, Mac 2) LAN IP"
+  prompt_var VAIBHAV_LAN_IP "Vaibhav's (Backend A, Mac 3) LAN IP"
   prompt_var AKSHAT_LAN_IP "Akshat's (Backend B, Mac 4) LAN IP"
 }
 
@@ -119,12 +119,13 @@ p2_setup() {
   for a in "$@"; do   # accept pasted KEY=VALUE pairs (see `bin/phase2 topology`)
     case "$a" in
       --edge-bundle=*) CN_EDGE_BUNDLE="${a#*=}";;
-      DNS_IP=*|EDGE_IP=*|HARDIK_LAN_IP=*|AKSHAT_LAN_IP=*|DNS2_IP=*|STANDBY_EDGE_IP=*|TEAM=*) k="${a%%=*}"; v="${a#*=}"; save_config_var "$k" "$v";;
+      HARDIK_LAN_IP=*) save_config_var VAIBHAV_LAN_IP "${a#*=}";;   # legacy name of the Backend A IP (old pasted lines)
+      DNS_IP=*|EDGE_IP=*|VAIBHAV_LAN_IP=*|AKSHAT_LAN_IP=*|DNS2_IP=*|STANDBY_EDGE_IP=*|TEAM=*) k="${a%%=*}"; v="${a#*=}"; save_config_var "$k" "$v";;
       *) die "unknown argument: $a";;
     esac
   done
   [ "$NETWORK_MODE" = lan ] || die "Phase 2 needs NETWORK_MODE=lan (set it in $CN_USER_ENV)."
-  if [ "${CN_P2_CHAIN:-0}" = 1 ] && { [ -z "${DNS_IP:-}" ] || [ -z "${EDGE_IP:-}" ] || [ -z "${HARDIK_LAN_IP:-}" ] || [ -z "${AKSHAT_LAN_IP:-}" ]; }; then
+  if [ "${CN_P2_CHAIN:-0}" = 1 ] && { [ -z "${DNS_IP:-}" ] || [ -z "${EDGE_IP:-}" ] || [ -z "${VAIBHAV_LAN_IP:-}" ] || [ -z "${AKSHAT_LAN_IP:-}" ]; }; then
     # Called at the end of a Phase 1 setup on a Mac that does not know the whole IP table: do not interrogate, point at the one-liner.
     info "Phase 2 needs the team's IP table. On Mitul's Mac run  ./bin/phase2 topology  and paste the line it prints here"
     info "(or just answer the prompts: ./bin/phase2 setup)."
@@ -156,7 +157,7 @@ p2_setup() {
 }
 
 p2_topology_line() {
-  printf '    ./bin/phase2 setup DNS_IP=%s EDGE_IP=%s HARDIK_LAN_IP=%s AKSHAT_LAN_IP=%s\n' "$DNS_IP" "$EDGE_IP" "$HARDIK_LAN_IP" "$AKSHAT_LAN_IP"
+  printf '    ./bin/phase2 setup DNS_IP=%s EDGE_IP=%s VAIBHAV_LAN_IP=%s AKSHAT_LAN_IP=%s\n' "$DNS_IP" "$EDGE_IP" "$VAIBHAV_LAN_IP" "$AKSHAT_LAN_IP"
 }
 
 p2_start() {
@@ -248,7 +249,7 @@ p2_iso_ports() { local p=""; p2_is_a && p="$BACKEND_A_PORT"; p2_is_b && p="$p $B
 
 p2_iso_render() {   # writes the rules + a pf.conf that includes them; validates both without root
   local ports allowed port; ports="$(p2_iso_ports)"
-  [ -n "$ports" ] || die "This Mac ($(my_ip)) hosts no backend; run on A=$HARDIK_LAN_IP or B=$AKSHAT_LAN_IP."
+  [ -n "$ports" ] || die "This Mac ($(my_ip)) hosts no backend; run on A=$VAIBHAV_LAN_IP or B=$AKSHAT_LAN_IP."
   allowed="${P2_ISO_ALLOW:-$EDGE_IP${STANDBY_EDGE_IP:+, $STANDBY_EDGE_IP}}"
   {
     echo "# cn-phase2 / Extension C. Generated. Backend ports are reachable ONLY from: $allowed"
@@ -313,7 +314,7 @@ p2_iso_test() {   # run on ANY Mac: can THIS Mac reach the backend ports directl
 # -------------------------------------------- Extension D: HA failover ------
 p2_demo_failover() {
   local dead="${1:-a}" live letter_dead letter_live owner_script t
-  case "$dead" in a|A) letter_dead=A; letter_live=B; owner_script="./macs/mac3-hardik/stop.sh";; b|B) letter_dead=B; letter_live=A; owner_script="./macs/mac4-akshat/stop.sh";; *) die "usage: phase2 failover [a|b]";; esac
+  case "$dead" in a|A) letter_dead=A; letter_live=B; owner_script="./macs/mac3-vaibhav/stop.sh";; b|B) letter_dead=B; letter_live=A; owner_script="./macs/mac4-akshat/stop.sh";; *) die "usage: phase2 failover [a|b]";; esac
   live="$letter_live"
   p2_only_live() { local o; o="$(sample_backends 4)"; [[ "$o" == *"$live"* && "$o" != *"$letter_dead"* && "$o" != *\?* ]]; }
   p2_both_up()   { local o; o="$(sample_backends 8)"; [[ "$o" == *A* && "$o" == *B* ]]; }
@@ -324,7 +325,7 @@ p2_demo_failover() {
   p2_both_up || { fail "both backends must be up first: ./bin/status"; return 1; }
   step "2. STOP Backend $letter_dead"
   if { [ "$letter_dead" = A ] && p2_is_a; } || { [ "$letter_dead" = B ] && p2_is_b; }; then
-    local role; [ "$letter_dead" = A ] && role=hardik || role=akshat
+    local role; [ "$letter_dead" = A ] && role=vaibhav || role=akshat
     info "this Mac runs Backend $letter_dead - stopping it"; "$REPO_ROOT/scripts/role.sh" "$role" stop >/dev/null
   else
     info "On the Backend $letter_dead Mac run:  ${owner_script}"
@@ -337,7 +338,7 @@ p2_demo_failover() {
   step "4. START Backend $letter_dead again"
   if { [ "$letter_dead" = A ] && p2_is_a; } || { [ "$letter_dead" = B ] && p2_is_b; }; then
     info "this Mac runs Backend $letter_dead - starting it"
-    "$REPO_ROOT/scripts/role.sh" "$([ "$letter_dead" = A ] && echo hardik || echo akshat)" start >/dev/null
+    "$REPO_ROOT/scripts/role.sh" "$([ "$letter_dead" = A ] && echo vaibhav || echo akshat)" start >/dev/null
   else
     info "On the Backend $letter_dead Mac run:  ${owner_script%stop.sh}start.sh"
   fi
@@ -359,7 +360,7 @@ p2_standby_start() {
 
 p2_bundle_export() {
   p2_need edge
-  [ -f "$TLS_CERT" ] && [ -f "$TLS_KEY" ] || die "No server certificate yet: run ./macs/mac2-vaibhav/setup.sh first."
+  [ -f "$TLS_CERT" ] && [ -f "$TLS_KEY" ] || die "No server certificate yet: run ./macs/mac2-hardik/setup.sh first."
   local out="${1:-$P2_BUNDLE_DEFAULT}" pass
   pass="$(openssl rand -hex 10)"
   # -md sha256 (not -pbkdf2): works identically on macOS LibreSSL and Homebrew OpenSSL; the passphrase is 80 random bits.
@@ -438,7 +439,7 @@ p2_drill_inject() {
     dns-record) DNS_RECORD_IP=192.0.2.99 dns_start >/dev/null; flush_dns_cache;;
     dns-down) dns_stop; flush_dns_cache;;
     edge-down) edge_stop;;
-    backend-down) "$REPO_ROOT/scripts/role.sh" "$(p2_is_a && echo hardik || echo akshat)" stop >/dev/null;;
+    backend-down) "$REPO_ROOT/scripts/role.sh" "$(p2_is_a && echo vaibhav || echo akshat)" stop >/dev/null;;
     firewall-blocks-edge) P2_ISO_ALLOW=192.0.2.1 p2_iso_render; P2_ISO_ALLOW=192.0.2.1 p2_iso_on >/dev/null;;
   esac
 }
@@ -446,7 +447,7 @@ p2_drill_fix() {
   case "$1" in
     dns-record|dns-down) dns_start >/dev/null; flush_dns_cache;;
     edge-down) edge_start >/dev/null;;
-    backend-down) "$REPO_ROOT/scripts/role.sh" "$(p2_is_a && echo hardik || echo akshat)" start >/dev/null;;
+    backend-down) "$REPO_ROOT/scripts/role.sh" "$(p2_is_a && echo vaibhav || echo akshat)" start >/dev/null;;
     firewall-blocks-edge) p2_iso_off >/dev/null;;
   esac
 }

@@ -78,6 +78,8 @@ _load_env_file() {
 load_config() {
   _load_env_file "$CN_USER_ENV"
   _load_env_file "$REPO_ROOT/config/project.example.env"
+  # Legacy name: before the Hardik/Vaibhav swap the Backend A IP was saved as HARDIK_LAN_IP.
+  [ -z "${VAIBHAV_LAN_IP:-}" ] && [ -n "${HARDIK_LAN_IP:-}" ] && export VAIBHAV_LAN_IP="$HARDIK_LAN_IP"
   APP_DOMAIN="app.${TEAM}.test"
   API_DOMAIN="api.${TEAM}.test"
   TEST_ZONE="${TEAM}.test"
@@ -85,7 +87,7 @@ load_config() {
     EDGE_IP="${EDGE_IP:-${TUNNEL_EDGE_IP:-10.250.0.2}}"
     BACKEND_A_HOST="$TUNNEL_A_IP"; BACKEND_B_HOST="$TUNNEL_B_IP"
   else
-    BACKEND_A_HOST="$HARDIK_LAN_IP"; BACKEND_B_HOST="$AKSHAT_LAN_IP"
+    BACKEND_A_HOST="$VAIBHAV_LAN_IP"; BACKEND_B_HOST="$AKSHAT_LAN_IP"
   fi
   APP_URL="https://${APP_DOMAIN}:${EDGE_PORT}"
   CURL="${CURL:-/usr/bin/curl}"; [ -x "$CURL" ] || CURL="$(command -v curl || true)"
