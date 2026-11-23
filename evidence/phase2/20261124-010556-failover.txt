@@ -1,0 +1,30 @@
+# failover | Tue Nov 24 01:05:56 IST 2026 | host=AdityaInnovates-MacBook-Pro ip=10.100.147.63
+============================================================
+  EXTENSION D - HIGH-AVAILABILITY FAILOVER (stop Backend A)
+============================================================
+
+1. Healthy: both backends share the load
+    responses: B A B A B A B A 
+
+2. STOP Backend A
+==> On the Backend A Mac run:  ./macs/mac3-prajwal/stop.sh
+  waiting for Backend A to go down and nginx to route around it .......... done after 27s
+
+3. Service continues on Backend B only
+    responses: B B B B B B B B B B 
+    GET /api/status -> HTTP 200
+    GET /api/status -> HTTP 200
+    GET /api/status -> HTTP 200
+  WHY  nginx marks the failed upstream (max_fails=1, fail_timeout=5s) and proxy_next_upstream retries the other one within the same request.
+
+4. START Backend A again
+==> On the Backend A Mac run:  ./macs/mac3-prajwal/start.sh
+  waiting for load balancing to resume across both ... done after 11s
+    responses: A B A B A B A B 
+✓ PASS: failover and recovery observed
+
+5. What is STILL a single point of failure?
+    The edge nginx (Mac 2): if it dies every client fails even though both backends are healthy.
+    Phase 2 reduces the damage with a standby edge + DNS cutover (Extension E, recovery time ~ DNS TTL).
+    To REMOVE it you need automatic takeover: a floating/virtual IP (VRRP/keepalived) shared by two edges,
+    or DNS health checks that switch the record on their own (e.g. Route 53 health-checked failover).

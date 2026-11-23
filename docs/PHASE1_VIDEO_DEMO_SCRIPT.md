@@ -1,6 +1,6 @@
 # Video Presentation Script: 5-Minute Phase 1 Demonstration
-**Team Name:** AEIN (*Another Error In Network*)  
-**Recommended Video Filename:** `CN_Phase1_[Section]_AEIN_LAN.mp4` (e.g., `CN_Phase1_S1_AEIN_LAN.mp4`)  
+**Team Name:** FSOCIETY  
+**Recommended Video Filename:** `CN_Phase1_[Section]_FSOCIETY_LAN.mp4` (e.g., `CN_Phase1_S1_FSOCIETY_LAN.mp4`)  
 **Maximum Duration:** 5:00 minutes (Target: 4:40 to stay comfortably within limits)  
 **Maximum File Size:** 500 MB (1080p MP4 recommended)  
 **Submission Requirement:** Google Drive Link set to *"Anyone with the link can view"* (test in Incognito).
@@ -11,7 +11,7 @@
 
 | Timecode | Segment | Purpose / Focus |
 |---|---|---|
-| **0:00 – 0:45** | **Part 1: Team & Architecture Intro** | Team AEIN intro, roles, IPs, LAN topology |
+| **0:00 – 0:45** | **Part 1: Team & Architecture Intro** | Team FSOCIETY intro, roles, IPs, LAN topology |
 | **0:45 – 1:45** | **Part 1: Setup Flow & Master Status** | Network addressing (`macos-network-info.sh`), `./bin/status` all green |
 | **1:45 – 3:15** | **Part 2: Configuration Deep-Dive** | Scoped DNS, TLS 1.3 / HTTP/2, Load Balancing, HTTP Caching |
 | **3:15 – 4:45** | **Part 3: Section 5 Failure Demos (D3)** | All 5 Failure Scenarios (DNS server, DNS record, 1 backend down, both down, wrong port) |
@@ -47,7 +47,7 @@
 
 #### [0:00 – 0:45] Team & Architecture Introduction
 **🎙️ What to Say:**
-> *"Hello everyone and welcome to our Computer Networks Phase 1 demonstration. We are Team **AEIN**, which stands for **Another Error In Network**.  
+> *"Hello everyone and welcome to our Computer Networks Phase 1 demonstration. We are Team **FSOCIETY**.  
 > Our distributed architecture is deployed across physical Mac machines over a local area network:
 > - **Aditya Kumar (Mac 1)** is running the local DNS server via dnsmasq on port 53, the test controller, and Backend B on port 3002.
 > - **Prajwal (Mac 2)** is hosting the TLS Edge Reverse Proxy using Nginx on port 8443, as well as Backend A on port 3001.
@@ -226,7 +226,7 @@ curl -v --max-time 2 https://app.team1.test:9999/api/status 2>&1 | grep -E "(Try
 
 **🎙️ What to Say:**
 > *"To summarize: We have demonstrated DNS resolution, TLS 1.3 security, reverse proxy load balancing, HTTP caching, and analyzed network behavior across 5 distinct failure modes.  
-> This concludes the Phase 1 presentation for Team **AEIN (Another Error In Network)**. Thank you!"*
+> This concludes the Phase 1 presentation for Team **FSOCIETY**. Thank you!"*
 
 ---
 

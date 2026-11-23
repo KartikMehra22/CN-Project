@@ -1,0 +1,19 @@
+[PHASE 2]
+  PASS  A  primary DNS 10.100.147.63 answers app.team1.test
+  PASS  A  BACKUP DNS 10.100.147.77 answers the same record
+  PASS  A  this Mac's resolver lists primary AND backup
+  PASS  B  record carries a TTL (300s; ./bin/phase2 ttl demos it at 30s)
+        ============================================================
+          EXTENSION C - WHO CAN REACH THE BACKENDS DIRECTLY? (this Mac: 10.100.147.63)
+        ============================================================
+          Backend A 10.100.147.229:3001   direct connect: yes   allowed to: no    -> NOT ISOLATED (rules off? run: ./bin/phase2 isolate on  on the backend Mac)
+          Backend B 10.100.147.95:3002   direct connect: yes   allowed to: no    -> NOT ISOLATED (rules off? run: ./bin/phase2 isolate on  on the backend Mac)
+          Through the edge (the intended path): works   B A B A 
+          WHY  firewall rules filter on the SOURCE IP: the edge is on the list, every other client is dropped before it reaches the app.
+  WARN  C  not isolated right now (expected until a backend Mac runs: ./bin/phase2 isolate on)
+        responses: B A B A B A B A 
+  PASS  D  both backends serve, no failed requests (stop one: ./bin/phase2 failover)
+  PASS  E  primary edge 10.100.147.77 healthy
+  PASS  E  STANDBY edge 10.100.147.95 healthy (same site, same certificate)
+  PASS  E  the two edges are distinguishable (X-Edge: Kartik-ka-MacBook-Pro / Pratyushs-MacBook-Pro-3)
+  PASS  F  ./bin/doctor finds every layer healthy

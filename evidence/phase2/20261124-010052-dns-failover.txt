@@ -1,0 +1,47 @@
+# dns-failover | Tue Nov 24 01:00:52 IST 2026 | host=AdityaInnovates-MacBook-Pro ip=10.100.147.63
+============================================================
+  EXTENSION A - BACKUP DNS RESOLVER
+============================================================
+
+1. Two DNS servers, same records
+  $ cat /etc/resolver/team1.test
+    # managed by cn-phase1 (remove: bin/teardown)
+    nameserver 127.0.0.1
+    nameserver 10.100.147.77
+  $ /usr/bin/dig +noall +answer -p 53 @10.100.147.63 app.team1.test
+    app.team1.test.		300	IN	A	10.100.147.77
+  $ /usr/bin/dig +noall +answer -p 53 @10.100.147.77 app.team1.test
+    app.team1.test.		300	IN	A	10.100.147.77
+  WHY  clients list BOTH servers in /etc/resolver/team1.test; the first is tried first, the second only if the first does not answer.
+
+2. Everything works while the primary is up
+  $ app_curl -o /dev/null -w dns=%{time_namelookup}s http=%{http_code}\n https://app.team1.test:8443/api/status
+    dns=0.002445s http=200
+
+3. STOP the primary DNS (dnsmasq on this Mac)
+✓ primary dnsmasq stopped
+  $ /usr/bin/dig +time=1 +tries=1 -p 53 @10.100.147.63 app.team1.test
+    
+    ; <<>> DiG 9.10.6 <<>> +time=1 +tries=1 -p 53 @10.100.147.63 app.team1.test
+    ; (1 server found)
+    ;; global options: +cmd
+    ;; connection timed out; no servers could be reached
+  $ /usr/bin/dig +noall +answer -p 53 @10.100.147.77 app.team1.test
+    app.team1.test.		300	IN	A	10.100.147.77
+
+4. Clients keep resolving - through the backup
+  $ dscacheutil -q host -a name app.team1.test
+    name: app.team1.test
+    ip_address: 10.100.147.77
+    
+  $ app_curl -o /dev/null -w dns=%{time_namelookup}s http=%{http_code}\n https://app.team1.test:8443/api/status
+    dns=0.002271s http=200
+✓ PASS: name still resolves and the HTTPS service answers with the primary DNS down
+  WHY  DNS FAILURE = names stop resolving (here hidden by the backup). APPLICATION FAILURE = names resolve fine but the service answers 502/refuses.
+  WHY  A cached answer would also hide a DNS outage until its TTL expires - that is Extension B.
+
+==> Restoring primary DNS
+
+5. Primary is back
+  $ /usr/bin/dig +noall +answer -p 53 @10.100.147.63 app.team1.test
+    app.team1.test.		300	IN	A	10.100.147.77

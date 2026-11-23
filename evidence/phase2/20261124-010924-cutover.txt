@@ -1,0 +1,33 @@
+# cutover | Tue Nov 24 01:09:24 IST 2026 | host=AdityaInnovates-MacBook-Pro ip=10.100.147.63
+============================================================
+  EXTENSION E - CONTROLLED EDGE MIGRATION (DNS-BASED CUTOVER)
+============================================================
+
+0. Pre-check: both edges serve the same site
+    primary  10.100.147.77         -> X-Edge: Kartik-ka-MacBook-Pro
+    standby  10.100.147.95 -> X-Edge: Pratyushs-MacBook-Pro-3
+
+1. Short TTL (30s) and a warm client cache pointing at the PRIMARY edge
+  before  server(dig)=10.100.147.77   client(OS)=10.100.147.77   answered-by=Kartik-ka-MacBook-Pro
+
+2. CUTOVER: DNS record -> standby edge 10.100.147.95   (watch the client)
+  t+0s    server(dig)=10.100.147.95   client(OS)=10.100.147.77   answered-by=Kartik-ka-MacBook-Pro
+  t+3s    server(dig)=10.100.147.95   client(OS)=10.100.147.77   answered-by=Kartik-ka-MacBook-Pro
+  t+6s    server(dig)=10.100.147.95   client(OS)=10.100.147.77   answered-by=Kartik-ka-MacBook-Pro
+  t+9s    server(dig)=10.100.147.95   client(OS)=10.100.147.77   answered-by=Kartik-ka-MacBook-Pro
+  t+12s   server(dig)=10.100.147.95   client(OS)=10.100.147.77   answered-by=Kartik-ka-MacBook-Pro
+  t+15s   server(dig)=10.100.147.95   client(OS)=10.100.147.77   answered-by=Kartik-ka-MacBook-Pro
+  t+19s   server(dig)=10.100.147.95   client(OS)=10.100.147.77   answered-by=Kartik-ka-MacBook-Pro
+  t+22s   server(dig)=10.100.147.95   client(OS)=10.100.147.77   answered-by=Kartik-ka-MacBook-Pro
+  t+25s   server(dig)=10.100.147.95   client(OS)=10.100.147.77   answered-by=Kartik-ka-MacBook-Pro
+  t+28s   server(dig)=10.100.147.95   client(OS)=10.100.147.77   answered-by=Kartik-ka-MacBook-Pro
+  t+31s   server(dig)=10.100.147.95   client(OS)=10.100.147.77   answered-by=Kartik-ka-MacBook-Pro
+  t+34s   server(dig)=10.100.147.95   client(OS)=10.100.147.77   answered-by=Kartik-ka-MacBook-Pro
+  t+37s   server(dig)=10.100.147.95   client(OS)=10.100.147.77   answered-by=Kartik-ka-MacBook-Pro
+  t+41s   server(dig)=10.100.147.95   client(OS)=10.100.147.95   answered-by=Pratyushs-MacBook-Pro-3
+✓ PASS: traffic moved to the standby edge
+  WHY  clients holding a cached answer keep using the OLD edge until the TTL expires; new lookups go to the standby at once. That is the traffic-cutover window.
+  WHY  Backup DNS holds the OLD record: after a cutover also run  ./bin/phase2 point standby  on the backup DNS Mac so both servers agree.
+
+==> Switching back to the primary edge
+  restored server(dig)=10.100.147.77   client(OS)=10.100.147.77   answered-by=Kartik-ka-MacBook-Pro
