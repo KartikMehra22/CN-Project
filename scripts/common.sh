@@ -78,8 +78,8 @@ _load_env_file() {
 load_config() {
   _load_env_file "$CN_USER_ENV"
   _load_env_file "$REPO_ROOT/config/project.example.env"
-  # Legacy name: before the Hardik/Vaibhav swap the Backend A IP was saved as HARDIK_LAN_IP.
-  [ -z "${VAIBHAV_LAN_IP:-}" ] && [ -n "${HARDIK_LAN_IP:-}" ] && export VAIBHAV_LAN_IP="$HARDIK_LAN_IP"
+  # Legacy name: before the Kartik Mehra/Prajwal swap the Backend A IP was saved as KARTIK_LAN_IP.
+  [ -z "${PRAJWAL_LAN_IP:-}" ] && [ -n "${KARTIK_LAN_IP:-}" ] && export PRAJWAL_LAN_IP="$KARTIK_LAN_IP"
   APP_DOMAIN="app.${TEAM}.test"
   API_DOMAIN="api.${TEAM}.test"
   TEST_ZONE="${TEAM}.test"
@@ -87,16 +87,16 @@ load_config() {
     EDGE_IP="${EDGE_IP:-${TUNNEL_EDGE_IP:-10.250.0.2}}"
     BACKEND_A_HOST="$TUNNEL_A_IP"; BACKEND_B_HOST="$TUNNEL_B_IP"
   else
-    BACKEND_A_HOST="$VAIBHAV_LAN_IP"; BACKEND_B_HOST="$AKSHAT_LAN_IP"
+    BACKEND_A_HOST="$PRAJWAL_LAN_IP"; BACKEND_B_HOST="$PRATUSH_LAN_IP"
   fi
   APP_URL="https://${APP_DOMAIN}:${EDGE_PORT}"
   CURL="${CURL:-/usr/bin/curl}"; [ -x "$CURL" ] || CURL="$(command -v curl || true)"
   # Phase 2 (only after `bin/phase2 setup` set PHASE2=1; LAN mode only). Derived, never persisted,
-  # so they follow EDGE_IP / AKSHAT_LAN_IP if DHCP renumbers. Override by setting them in project.env.
+  # so they follow EDGE_IP / PRATUSH_LAN_IP if DHCP renumbers. Override by setting them in project.env.
   DNS_RECORD_IP=""    # empty = "the edge" (EDGE_IP, resolved when dnsmasq.conf is rendered); set only after a cutover
   if [ "${PHASE2:-0}" = "1" ] && [ "$NETWORK_MODE" = "lan" ]; then
     DNS2_IP="${DNS2_IP:-$EDGE_IP}"                      # backup DNS: the edge Mac (brief: any Mac except Mac 1)
-    STANDBY_EDGE_IP="${STANDBY_EDGE_IP:-$AKSHAT_LAN_IP}" # standby nginx: Mac 4 (brief: Mac 3 or 4)
+    STANDBY_EDGE_IP="${STANDBY_EDGE_IP:-$PRATUSH_LAN_IP}" # standby nginx: Mac 4 (brief: Mac 3 or 4)
     [ "${ACTIVE_EDGE:-primary}" = "standby" ] && [ -n "$STANDBY_EDGE_IP" ] && DNS_RECORD_IP="$STANDBY_EDGE_IP"
   else
     DNS2_IP=""; STANDBY_EDGE_IP=""

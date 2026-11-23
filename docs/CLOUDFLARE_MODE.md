@@ -1,6 +1,6 @@
 # Tunnel mode (`NETWORK_MODE=tunnel`)
 
-Purpose: Vaibhav and Akshat are remote. Mitul and Hardik stay on one LAN. **Only nginx -> backend travels over Cloudflare.**
+Purpose: Prajwal and Pratush are remote. Aditya Kumar and Kartik Mehra stay on one LAN. **Only nginx -> backend travels over Cloudflare.**
 Cloudflare does *not* handle client-facing DNS or TLS: the client still resolves via dnsmasq and validates a certificate issued by our own CA at nginx.
 
 Not equivalent to the original brief (no shared LAN, uses a cloud service). Ask faculty before submitting in this mode; keep `lan` working.
@@ -8,13 +8,13 @@ Not equivalent to the original brief (no shared LAN, uses a cloud service). Ask 
 ## Address plan
 | Component | Owner | Virtual IP | Port | Tunnel |
 |---|---|---|---|---|
-| Edge Proxy | Hardik | 10.250.0.2 | 8443 | `cn-edge` |
-| Backend A | Vaibhav | 10.250.0.3 | 3001 | `cn-backend-a` |
-| Backend B | Akshat | 10.250.0.4 | 3002 | `cn-backend-b` |
+| Edge Proxy | Kartik Mehra | 10.250.0.2 | 8443 | `cn-edge` |
+| Backend A | Prajwal | 10.250.0.3 | 3001 | `cn-backend-a` |
+| Backend B | Pratush | 10.250.0.4 | 3002 | `cn-backend-b` |
 
 nginx upstreams are ordinary `IP:port`. On each Mac running a service (Edge or Backend), the setup adds `sudo ifconfig lo0 alias <virtual-ip> 255.255.255.255` because `cloudflared` delivers private-network traffic to the destination IP as-is, so the Mac must own it. (The alias disappears on reboot; `./bin/start` re-adds it.) No router port-forwarding is needed - `cloudflared` only makes outbound connections.
 
-## One-time admin steps (Mitul)
+## One-time admin steps (Aditya Kumar)
 Automated by `admin/bootstrap-cloudflare.sh` (use `--dry-run` first):
 1. `cloudflared tunnel login`
 2. Creates tunnels: `cn-edge` (routes `10.250.0.2/32`), `cn-backend-a` (`10.250.0.3/32`), `cn-backend-b` (`10.250.0.4/32`).
@@ -27,12 +27,12 @@ Automated by `admin/bootstrap-cloudflare.sh` (use `--dry-run` first):
 4. Send each owner **only their own** credentials file (AirDrop / password manager). Never git, never a shared channel that keeps history.
 
 ## Per-Mac Setup (Fully Remote)
-* **Vaibhav (Backend A):** `NETWORK_MODE=tunnel ./macs/mac3-vaibhav/setup.sh --credentials <credentials-cn-backend-a.json>`
-* **Akshat (Backend B):** `NETWORK_MODE=tunnel ./macs/mac4-akshat/setup.sh --credentials <credentials-cn-backend-b.json>`
-* **Hardik (Edge):** `NETWORK_MODE=tunnel ./macs/mac2-hardik/setup.sh --credentials <credentials-cn-edge.json>`
-* **Mitul (Client + DNS):** Install/connect to Cloudflare WARP, then `NETWORK_MODE=tunnel ./macs/mac1-mitul/setup.sh`. Mitul's dnsmasq resolves `app.team1.test -> 10.250.0.2`. All HTTPS traffic to `:8443` flows through WARP to Hardik's Edge!
+* **Prajwal (Backend A):** `NETWORK_MODE=tunnel ./macs/mac3-prajwal/setup.sh --credentials <credentials-cn-backend-a.json>`
+* **Pratush (Backend B):** `NETWORK_MODE=tunnel ./macs/mac4-pratush/setup.sh --credentials <credentials-cn-backend-b.json>`
+* **Kartik Mehra (Edge):** `NETWORK_MODE=tunnel ./macs/mac2-kartik/setup.sh --credentials <credentials-cn-edge.json>`
+* **Aditya Kumar (Client + DNS):** Install/connect to Cloudflare WARP, then `NETWORK_MODE=tunnel ./macs/mac1-aditya/setup.sh`. Aditya Kumar's dnsmasq resolves `app.team1.test -> 10.250.0.2`. All HTTPS traffic to `:8443` flows through WARP to Kartik Mehra's Edge!
 
 Credentials are stored at `~/.config/cn-phase1/secrets/` (`tunnel-credentials.json` or `tunnel-token`, chmod 600). A dashboard-created remotely managed tunnel (token) also works - add the private network route to it in the dashboard.
 
 ## Verifying
-`./bin/status` (Backend A/B via edge, tunnel A/B inferred), `./bin/doctor` (CLOUDFLARE layer), and on a backend Mac `./macs/mac3-vaibhav/status.sh` (shows `Cloudflare tunnel CONNECTED`). Logs: `~/Library/Logs/cn-phase1/cloudflared.log`.
+`./bin/status` (Backend A/B via edge, tunnel A/B inferred), `./bin/doctor` (CLOUDFLARE layer), and on a backend Mac `./macs/mac3-prajwal/status.sh` (shows `Cloudflare tunnel CONNECTED`). Logs: `~/Library/Logs/cn-phase1/cloudflared.log`.

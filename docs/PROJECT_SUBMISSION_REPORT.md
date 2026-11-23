@@ -27,7 +27,7 @@ This project demonstrates a multi-tier, multi-machine distributed web infrastruc
                    │ 1. DNS Query: app.team1.test (UDP :53)
                    ▼
        ╔═════════════════════════════════════════╗
-       ║   MAC 1 (Mitul) — 10.80.3.253           ║
+       ║   MAC 1 (Aditya Kumar) — 10.80.3.253           ║
        ║   • Scoped Resolver: /etc/resolver      ║
        ║   • dnsmasq DNS Server (:53)            ║
        ╚═════════════════════════════════════════╝
@@ -37,7 +37,7 @@ This project demonstrates a multi-tier, multi-machine distributed web infrastruc
                    │ 2. HTTPS Request: https://app.team1.test:8443 (TCP / TLS 1.3)
                    ▼
        ╔═════════════════════════════════════════════════════════════════════════╗
-       ║   MAC 2 (Vaibhav) — 10.80.3.171                                          ║
+       ║   MAC 2 (Prajwal) — 10.80.3.171                                          ║
        ║   • Nginx Reverse Proxy & Load Balancer (:8443)                         ║
        ║   • TLS Termination (Custom CA Root & SAN Cert)                         ║
        ║   • Round-Robin Scheduler with Passive Health Probing                   ║
@@ -47,9 +47,9 @@ This project demonstrates a multi-tier, multi-machine distributed web infrastruc
                    │     HTTP/1.1 (TCP :3001)                    │     HTTP/1.1 (TCP :3002)
                    ▼                                             ▼
        ╔═════════════════════════════════════╗       ╔═════════════════════════════════════╗
-       ║   BACKEND A (Vaibhav's Mac)          ║       ║   BACKEND B (Mitul's Mac)           ║
+       ║   BACKEND A (Prajwal's Mac)          ║       ║   BACKEND B (Aditya Kumar's Mac)           ║
        ║   IP: 10.80.3.171 : 3001            ║       ║   IP: 10.80.3.253 : 3002            ║
-       ║   Owner: Vaibhav                     ║       ║   Owner: Akshat                     ║
+       ║   Owner: Prajwal                     ║       ║   Owner: Pratush                     ║
        ║   Header: X-Backend: A              ║       ║   Header: X-Backend: B              ║
        ╚═════════════════════════════════════╝       ╚═════════════════════════════════════╝
 ```
@@ -62,8 +62,8 @@ Every node on the subnet was identified, inventoried, and confirmed through low-
 
 | Node | Operator | Functional Roles | Interface | IPv4 Address | Subnet Mask | Default Gateway | MAC Address (Layer 2) |
 |---|---|---|---|---|---|---|---|
-| **Mac 1** | Mitul | DNS Server + Client + Backend B | `en0` (Wi-Fi) | `10.80.3.253` | `255.255.255.0` (`/24`) | `10.80.3.250` | `ae:53:53:91:2b:ed` |
-| **Mac 2** | Vaibhav | Edge Proxy / LB + Backend A | `en0` (Wi-Fi) | `10.80.3.171` | `255.255.255.0` (`/24`) | `10.80.3.250` | `ea:13:22:6c:89:97` |
+| **Mac 1** | Aditya Kumar | DNS Server + Client + Backend B | `en0` (Wi-Fi) | `10.80.3.253` | `255.255.255.0` (`/24`) | `10.80.3.250` | `ae:53:53:91:2b:ed` |
+| **Mac 2** | Prajwal | Edge Proxy / LB + Backend A | `en0` (Wi-Fi) | `10.80.3.171` | `255.255.255.0` (`/24`) | `10.80.3.250` | `ea:13:22:6c:89:97` |
 
 ### Link & Layer-3 Verification
 * **Subnet:** `10.80.3.0/24`
@@ -119,7 +119,7 @@ address=/api.team1.test/10.80.3.171
 local-ttl=300
 log-queries
 log-facility=-
-pid-file=/Users/mitulbhatia/.config/cn-phase1/run/dnsmasq.pid
+pid-file=/Users/adityabhatia/.config/cn-phase1/run/dnsmasq.pid
 ```
 
 ---
@@ -148,8 +148,8 @@ Nginx handles TLS termination and acts as a Layer 7 round-robin reverse proxy.
 #### Nginx Configuration (`~/.config/cn-phase1/generated/nginx.conf`)
 ```nginx
 worker_processes 1;
-pid /Users/vaibhavmaheshwari/.config/cn-phase1/run/nginx.pid;
-error_log /Users/vaibhavmaheshwari/Library/Logs/cn-phase1/nginx-error.log info;
+pid /Users/prajwalmaheshwari/.config/cn-phase1/run/nginx.pid;
+error_log /Users/prajwalmaheshwari/Library/Logs/cn-phase1/nginx-error.log info;
 
 events { worker_connections 256; }
 
@@ -158,7 +158,7 @@ http {
 
     log_format lb '$remote_addr [$time_local] "$request" $status '
                   'upstream=$upstream_addr backend=$upstream_http_x_backend rt=$request_time';
-    access_log /Users/vaibhavmaheshwari/Library/Logs/cn-phase1/nginx-access.log lb;
+    access_log /Users/prajwalmaheshwari/Library/Logs/cn-phase1/nginx-access.log lb;
 
     # Upstream server pool
     upstream project_backends {
@@ -174,8 +174,8 @@ http {
         http2 on;
         server_name app.team1.test api.team1.test;
 
-        ssl_certificate     /Users/vaibhavmaheshwari/.config/cn-phase1/tls/server.crt;
-        ssl_certificate_key /Users/vaibhavmaheshwari/.config/cn-phase1/tls/server.key;
+        ssl_certificate     /Users/prajwalmaheshwari/.config/cn-phase1/tls/server.crt;
+        ssl_certificate_key /Users/prajwalmaheshwari/.config/cn-phase1/tls/server.key;
         ssl_protocols       TLSv1.2 TLSv1.3;
 
         proxy_http_version 1.1;
@@ -208,8 +208,8 @@ http {
 ### 4.4. Application & Caching Layer (Task C & Task F)
 
 The backend servers are written in Python using standard libraries (`http.server.ThreadingHTTPServer`):
-* **Backend A:** Runs on `10.80.3.171:3001` (Owner: Vaibhav)
-* **Backend B:** Runs on `10.80.3.253:3002` (Owner: Akshat)
+* **Backend A:** Runs on `10.80.3.171:3001` (Owner: Prajwal)
+* **Backend B:** Runs on `10.80.3.253:3002` (Owner: Pratush)
 * **Response Header:** Injects `X-Backend: A` or `X-Backend: B`.
 * **Caching Specification:** Serves `/api/cacheable` with:
   * `Cache-Control: max-age=60`
@@ -243,7 +243,7 @@ All five automated test suites executed successfully and passed 100%:
 [BACKENDS]
   PASS  Backend A healthy (edge -> 10.80.3.171:3001)
   PASS  Backend B healthy (edge -> 10.80.3.253:3002)
-  PASS  /api/status JSON identifies backend: {"backend": "B", "owner": "Akshat", "status": "ok"}
+  PASS  /api/status JSON identifies backend: {"backend": "B", "owner": "Pratush", "status": "ok"}
 ```
 
 ### 5.4. Load Balancing Verification (`./tests/test_load_balancing.sh`)
@@ -265,7 +265,7 @@ All five automated test suites executed successfully and passed 100%:
 ### 5.6. System Status Probe (`./bin/status`)
 ```text
 ============================================================
-  MAC 1 MITUL - DNS / CLIENT
+  MAC 1 ADITYA - DNS / CLIENT
 ============================================================
   dnsmasq process                  OK
   DNS answers app.team1.test       OK
@@ -293,12 +293,12 @@ All five automated test suites executed successfully and passed 100%:
 ### Obstacle 1: Stale Root CA in macOS System Keychain
 * **Symptom:** `openssl s_client` passed with return code 0, but `curl` failed with error `(60) SSL certificate problem: unable to get local issuer certificate`.
 * **Root Cause Analysis:** Apple's SecureTransport engine queries `/Library/Keychains/System.keychain` before processing user flags. An older certificate with the exact same Subject Common Name (`CN Phase1 Local CA (team1)`) was already installed from a previous run. The original installer script checked only if the name existed, skipping installation of the newly regenerated CA. SecureTransport attempted validation against the stale public key and aborted.
-* **Resolution:** Re-engineered [`scripts/install-ca.sh`](file:///Users/mitulbhatia/Desktop/cnproject/scripts/install-ca.sh) to compute and compare cryptographic SHA-1 fingerprints between `pki/ca.crt` and Keychain entries. If a fingerprint mismatch is detected, it automatically deletes the stale certificate using `security delete-certificate` and adds the valid trust root.
+* **Resolution:** Re-engineered [`scripts/install-ca.sh`](file:///Users/adityabhatia/Desktop/cnproject/scripts/install-ca.sh) to compute and compare cryptographic SHA-1 fingerprints between `pki/ca.crt` and Keychain entries. If a fingerprint mismatch is detected, it automatically deletes the stale certificate using `security delete-certificate` and adds the valid trust root.
 
 ### Obstacle 2: `dnsmasq` Foreground PID Suppression
 * **Symptom:** `dnsmasq process FAIL` appeared in the status report even though DNS queries succeeded. Subsequent runs failed with `Address already in use`.
 * **Root Cause Analysis:** `dnsmasq` was invoked with `--keep-in-foreground` (`-k`). In `dnsmasq`, `-k` explicitly suppresses writing the configured `pid-file`. Because the `.pid` file was missing, process liveness checks failed, and stop scripts could not identify the process to terminate.
-* **Resolution:** Updated [`scripts/roles.sh`](file:///Users/mitulbhatia/Desktop/cnproject/scripts/roles.sh) to dynamically locate the running instance via `pgrep -f "dnsmasq.*$DNSMASQ_CONF"`, record the PID, and execute `pkill` cleanups before starting new instances.
+* **Resolution:** Updated [`scripts/roles.sh`](file:///Users/adityabhatia/Desktop/cnproject/scripts/roles.sh) to dynamically locate the running instance via `pgrep -f "dnsmasq.*$DNSMASQ_CONF"`, record the PID, and execute `pkill` cleanups before starting new instances.
 
 ### Obstacle 3: Dynamic DHCP IP Renumbering
 * **Symptom:** Moving between home and university networks caused DNS timeouts and refused connections.

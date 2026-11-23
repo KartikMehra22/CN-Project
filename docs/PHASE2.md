@@ -9,26 +9,26 @@ Every Mac runs the **same** command. It reads the IP table and works out *by its
 
 | Order | Who | Command | What it does |
 |---|---|---|---|
-| 1 | Hardik (edge, Mac 2) | `git pull && ./bin/phase2 setup` | starts the **backup DNS**; writes `~/cn-edge-bundle.enc` and prints its passphrase |
-| 2 | Akshat (Mac 4) | AirDrop the bundle, then `./bin/phase2 setup` | starts the **standby nginx** (bundle is found in `~/Downloads`, asks the passphrase); arms the backend firewall |
-| 3 | Mitul (Mac 1) | `./bin/phase2 setup` | resolver now lists primary + backup; prints a copy-paste line for the others |
-| 4 | Vaibhav (Mac 3) | paste the line Mitul's Mac printed | arms the backend firewall |
+| 1 | Kartik Mehra (edge, Mac 2) | `git pull && ./bin/phase2 setup` | starts the **backup DNS**; writes `~/cn-edge-bundle.enc` and prints its passphrase |
+| 2 | Pratush (Mac 4) | AirDrop the bundle, then `./bin/phase2 setup` | starts the **standby nginx** (bundle is found in `~/Downloads`, asks the passphrase); arms the backend firewall |
+| 3 | Aditya Kumar (Mac 1) | `./bin/phase2 setup` | resolver now lists primary + backup; prints a copy-paste line for the others |
+| 4 | Prajwal (Mac 3) | paste the line Aditya Kumar's Mac printed | arms the backend firewall |
 | 5 | anyone | `./bin/phase2 test` | PASS/FAIL for A-E, non-destructive |
 
 The Phase 1 commands (`./macs/<mac>/setup.sh`) now call this at the end too, so people who already know that command do not need to remember a second one.
 After a reboot: `./bin/start` (it restarts the Phase 2 services as well). Undo everything: `./bin/phase2 rollback`.
 
-**With fewer Macs** (e.g. Mitul = DNS + Backend B, Vaibhav = edge + Backend A): the defaults still hold - backup DNS goes to the edge Mac (Vaibhav), the standby edge to the Backend-B Mac (Mitul). Override with `DNS2_IP=` / `STANDBY_EDGE_IP=` in `~/.config/cn-phase1/project.env`.
+**With fewer Macs** (e.g. Aditya Kumar = DNS + Backend B, Prajwal = edge + Backend A): the defaults still hold - backup DNS goes to the edge Mac (Prajwal), the standby edge to the Backend-B Mac (Aditya Kumar). Override with `DNS2_IP=` / `STANDBY_EDGE_IP=` in `~/.config/cn-phase1/project.env`.
 
 ## What to run for each extension
 
 | Ext | Brief asks for | Command (where) | You will see |
 |---|---|---|---|
-| A | backup DNS; stop primary; clients keep resolving | `bin/phase2 dns-failover` (Mitul) | primary `dig` times out, backup answers, `curl` still works |
-| B | short TTL; change record; stale cache; flush | `bin/phase2 ttl` (Mitul) | server answers new IP at once, client keeps old one until TTL ends, flush is instant |
+| A | backup DNS; stop primary; clients keep resolving | `bin/phase2 dns-failover` (Aditya Kumar) | primary `dig` times out, backup answers, `curl` still works |
+| B | short TTL; change record; stale cache; flush | `bin/phase2 ttl` (Aditya Kumar) | server answers new IP at once, client keeps old one until TTL ends, flush is instant |
 | C | only the edge reaches 3001/3002; rollback | `bin/phase2 isolate on` (each backend Mac), `isolate test` (edge, then a client), `isolate off` | edge: open; client: blocked; original firewall restored |
 | D | stop A, B serves, restart A, LB resumes; name the SPOF | `bin/phase2 failover` (anywhere) | only `B`, all HTTP 200; both back within ~6 s |
-| E | standby nginx; DNS cutover; TTL effects | `bin/phase2 cutover` (Mitul); `bin/phase2 watch` on a client | old edge answers until TTL expiry, then the standby (`X-Edge` header) |
+| E | standby nginx; DNS cutover; TTL effects | `bin/phase2 cutover` (Aditya Kumar); `bin/phase2 watch` on a client | old edge answers until TTL expiry, then the standby (`X-Edge` header) |
 | F | fault injected by faculty; diagnose layer by layer | `bin/doctor`; rehearse with `bin/phase2 drill` | first failing layer + the commands to confirm it |
 
 Every demo saves a colour-free transcript to `evidence/phase2/` (Evidence Folder deliverable) and **puts the system back** when it ends or on Ctrl-C.

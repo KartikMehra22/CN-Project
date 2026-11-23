@@ -4,10 +4,10 @@
 ```mermaid
 flowchart TB
   LAN(("Private Wi-Fi / LAN"))
-  M1["Mac 1 - Mitul<br/>dnsmasq :53, dig, curl"] --- LAN
-  M2["Mac 2 - Hardik<br/>nginx :8443 TLS + LB"] --- LAN
-  M3["Mac 3 - Vaibhav<br/>Backend A :3001"] --- LAN
-  M4["Mac 4 - Akshat<br/>Backend B :3002"] --- LAN
+  M1["Mac 1 - Aditya Kumar<br/>dnsmasq :53, dig, curl"] --- LAN
+  M2["Mac 2 - Kartik Mehra<br/>nginx :8443 TLS + LB"] --- LAN
+  M3["Mac 3 - Prajwal<br/>Backend A :3001"] --- LAN
+  M4["Mac 4 - Pratush<br/>Backend B :3002"] --- LAN
 ```
 
 ## 2. DNS request
@@ -38,12 +38,12 @@ flowchart LR
 ## 4. Tunnel-mode path
 ```mermaid
 flowchart LR
-  C["Client (Mitul)"] -->|"local LAN: DNS, TCP, TLS, HTTP"| E["nginx (Hardik)"]
-  E -->|"dst 10.250.0.3:3001"| W["WARP client on Hardik"]
+  C["Client (Aditya Kumar)"] -->|"local LAN: DNS, TCP, TLS, HTTP"| E["nginx (Kartik Mehra)"]
+  E -->|"dst 10.250.0.3:3001"| W["WARP client on Kartik Mehra"]
   E -->|"dst 10.250.0.4:3002"| W
   W ==>|"encrypted overlay"| CF(("Cloudflare edge"))
-  CF ==>|"tunnel A (outbound from Vaibhav)"| HA["cloudflared + lo0 alias 10.250.0.3<br/>Backend A :3001"]
-  CF ==>|"tunnel B (outbound from Akshat)"| HB["cloudflared + lo0 alias 10.250.0.4<br/>Backend B :3002"]
+  CF ==>|"tunnel A (outbound from Prajwal)"| HA["cloudflared + lo0 alias 10.250.0.3<br/>Backend A :3001"]
+  CF ==>|"tunnel B (outbound from Pratush)"| HB["cloudflared + lo0 alias 10.250.0.4<br/>Backend B :3002"]
 ```
 
 ## 5. TCP / TLS / HTTP sequence
@@ -79,10 +79,10 @@ flowchart TD
 ## 7. Phase 2 topology (LAN mode)
 ```mermaid
 flowchart LR
-  C["Client Macs<br/>resolver lists BOTH DNS servers"] -->|"1st"| D1["Mac 1 Mitul<br/>PRIMARY dnsmasq :53"]
-  C -->|"2nd (if 1st silent)"| D2["Mac 2 Hardik<br/>BACKUP dnsmasq :53 (Ext A)"]
-  C -->|"HTTPS :8443 (record -> edge, TTL-bound)"| E1["Mac 2 Hardik<br/>PRIMARY nginx"]
-  C -.->|"after cutover (Ext E)"| E2["Mac 4 Akshat<br/>STANDBY nginx, same cert"]
+  C["Client Macs<br/>resolver lists BOTH DNS servers"] -->|"1st"| D1["Mac 1 Aditya Kumar<br/>PRIMARY dnsmasq :53"]
+  C -->|"2nd (if 1st silent)"| D2["Mac 2 Kartik Mehra<br/>BACKUP dnsmasq :53 (Ext A)"]
+  C -->|"HTTPS :8443 (record -> edge, TTL-bound)"| E1["Mac 2 Kartik Mehra<br/>PRIMARY nginx"]
+  C -.->|"after cutover (Ext E)"| E2["Mac 4 Pratush<br/>STANDBY nginx, same cert"]
   E1 --> FA["pf allow-list (Ext C)"]
   E2 --> FA
   FA --> BA["Mac 3 Backend A :3001"]

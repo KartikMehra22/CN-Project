@@ -1,6 +1,6 @@
-# Mac 3 - Vaibhav - Backend A
+# Mac 3 - Prajwal - Backend A
 
-**Setup (once, idempotent):** `./macs/mac3-vaibhav/setup.sh`   |   **Start:** `./macs/mac3-vaibhav/start.sh` (or `./bin/start`)   |   **Stop:** `./macs/mac3-vaibhav/stop.sh`   |   **Status:** `./macs/mac3-vaibhav/status.sh` (or `./bin/status`)
+**Setup (once, idempotent):** `./macs/mac3-prajwal/setup.sh`   |   **Start:** `./macs/mac3-prajwal/start.sh` (or `./bin/start`)   |   **Stop:** `./macs/mac3-prajwal/stop.sh`   |   **Status:** `./macs/mac3-prajwal/status.sh` (or `./bin/status`)
 
 **Software installed:** Python 3 (brew if missing); tunnel mode: cloudflared
 **Ports:** 3001/tcp (0.0.0.0); tunnel: virtual IP 10.250.0.3 on lo0
@@ -8,11 +8,11 @@
 **Settings:** `~/.config/cn-phase1/project.env` (created by setup)
 
 ## Role in the request flow
-Final hop. Receives plain HTTP from nginx, answers with JSON and `X-Backend: A`. In tunnel mode `cloudflared` makes an outbound connection to Cloudflare and delivers traffic for 10.250.0.3 to this process. Run: `./macs/mac3-vaibhav/setup.sh --credentials <file>` (tunnel mode).
+Final hop. Receives plain HTTP from nginx, answers with JSON and `X-Backend: A`. In tunnel mode `cloudflared` makes an outbound connection to Cloudflare and delivers traffic for 10.250.0.3 to this process. Run: `./macs/mac3-prajwal/setup.sh --credentials <file>` (tunnel mode).
 
 ## Common errors
 * Port 3001 in use -> other process.
-* Tunnel: missing credential file -> ask Mitul; `cloudflared.log` for auth errors.
+* Tunnel: missing credential file -> ask Aditya Kumar; `cloudflared.log` for auth errors.
 * Backend only on 127.0.0.1? Ours binds 0.0.0.0.
 * Firewall prompt for python3 -> Allow.
 

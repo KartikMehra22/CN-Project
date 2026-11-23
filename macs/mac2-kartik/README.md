@@ -1,6 +1,6 @@
-# Mac 2 - Hardik - nginx edge: TLS, reverse proxy, load balancer
+# Mac 2 - Kartik Mehra - nginx edge: TLS, reverse proxy, load balancer
 
-**Setup (once, idempotent):** `./macs/mac2-hardik/setup.sh`   |   **Start:** `./macs/mac2-hardik/start.sh` (or `./bin/start`)   |   **Stop:** `./macs/mac2-hardik/stop.sh`   |   **Status:** `./macs/mac2-hardik/status.sh` (or `./bin/status`)
+**Setup (once, idempotent):** `./macs/mac2-kartik/setup.sh`   |   **Start:** `./macs/mac2-kartik/start.sh` (or `./bin/start`)   |   **Stop:** `./macs/mac2-kartik/stop.sh`   |   **Status:** `./macs/mac2-kartik/status.sh` (or `./bin/status`)
 
 **Software installed:** Homebrew, nginx, local CA + server certificate (private keys stay in `~/.config/cn-phase1/tls`); tunnel mode: Cloudflare WARP
 **Ports:** 8443/tcp (TLS)
